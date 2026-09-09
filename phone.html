@@ -4,59 +4,110 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 <meta name="theme-color" content="#0a1c16">
-<title>নতুন কুঁড়ি — মোবাইল ক্যামেরা</title>
+<title>নতুন কুঁড়ি — মোবাইল স্ক্যান</title>
 <style>
   *{box-sizing:border-box;margin:0;padding:0;font-family:'Noto Sans Bengali','Hind Siliguri',system-ui,sans-serif;-webkit-tap-highlight-color:transparent}
-  body{background:#0a1c16;color:#e8f1ec;padding:12px;line-height:1.5}
-  .top{display:flex;justify-content:space-between;align-items:baseline;gap:8px;margin-bottom:10px}
-  h1{font-size:15px;font-weight:600}
-  #st{font-size:12px;color:#8fb5a4}
-  #st b{color:#4fd39a}
+  body{background:#0a1c16;color:#e8f1ec;line-height:1.55;padding:10px 10px 90px}
+  h1{font-size:16px;font-weight:600}
+  .top{display:flex;justify-content:space-between;align-items:baseline;gap:8px;margin-bottom:6px}
+  #conn{font-size:12px;color:#8fb5a4}
+  #conn b{color:#4fd39a}
   .off{color:#e0917a}
-  .grid{display:grid;grid-template-columns:1fr 1fr;gap:8px}
-  .card{background:#10261f;border:1px solid #22493a;border-radius:11px;overflow:hidden}
-  .card.done{border-color:#2f9e6f}
-  .card .shot{width:100%;height:108px;background:#06120e;border:none;border-radius:0;display:block;color:#8fb5a4;font-size:13px;padding:0;cursor:pointer}
-  .card img{width:100%;height:108px;object-fit:cover;display:block;cursor:zoom-in}
-  .card .row{display:flex;align-items:center;gap:6px;padding:7px 8px}
-  .card .row .t{flex:1;min-width:0;font-size:12px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
-  .card .row .t i{display:block;font-style:normal;font-size:10.5px;color:#8fb5a4}
-  .card .row button{width:auto;padding:5px 9px;font-size:11.5px}
-  .card.done .row .t i{color:#4fd39a}
-  button{font-size:13.5px;padding:10px;border-radius:9px;border:1px solid #2c5b49;background:#1c4033;color:#e8f1ec;cursor:pointer;width:100%}
-  .opt{display:flex;gap:9px;align-items:center;margin-top:11px;font-size:12.5px;color:#a9cdbd;background:#10261f;border:1px solid #22493a;border-radius:9px;padding:10px}
-  .opt input{width:auto}
-  #msg{margin-top:9px;background:#10261f;border-left:3px solid #f59e0b;border-radius:7px;padding:9px 11px;font-size:12.5px}
-  #pv{display:none;position:fixed;inset:0;background:rgba(3,10,8,.97);z-index:100;padding:10px;flex-direction:column}
-  #pv .cap{text-align:center;font-size:12.5px;color:#a9cdbd;padding:6px 0}
-  #pv .box{flex:1;min-height:0;display:flex;align-items:center;justify-content:center;overflow:auto}
-  #pv img{max-width:100%;max-height:100%;background:#fff;border-radius:8px}
-  #pv .btns{display:grid;grid-template-columns:1fr 1fr;gap:8px;padding-top:10px}
-  #pv .ok{background:#2f9e6f;border-color:#2f9e6f;color:#06231a;font-weight:600;font-size:17px;padding:16px}
-  #pv .no{background:#5d2b21;border-color:#8a4030;color:#ffd9cd;font-size:17px;padding:16px}
-  #lb{display:none;position:fixed;inset:0;background:rgba(3,10,8,.96);z-index:99;padding:12px;overflow:auto;text-align:center}
-  #lb img{max-width:100%;background:#fff;border-radius:6px}
+  .tabs{display:grid;grid-template-columns:1fr 1fr 1fr;gap:6px;position:sticky;top:0;background:#0a1c16;padding:6px 0;z-index:5}
+  button{font-size:14px;padding:11px;border-radius:9px;border:1px solid #2c5b49;background:#1c4033;color:#e8f1ec;cursor:pointer;width:100%}
+  .tabs button{padding:9px;font-size:13.5px}
+  .tabs .on{background:#2f9e6f;border-color:#2f9e6f;color:#06231a;font-weight:600}
+  .go{background:#2f9e6f;border-color:#2f9e6f;color:#06231a;font-weight:600}
+  .card{background:#10261f;border:1px solid #22493a;border-radius:10px;padding:10px;margin-top:10px}
+  .slot{display:flex;align-items:center;gap:9px;background:#0a1c16;border:1px solid #22493a;border-radius:9px;padding:7px;margin-bottom:7px}
+  .slot img,.slot .ph{width:46px;height:46px;border-radius:6px;object-fit:cover;background:#06120e;border:1px solid #2c5b49;flex:0 0 auto}
+  .slot .m{flex:1;min-width:0}
+  .slot .m b{display:block;font-size:12.5px;font-weight:600;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+  .slot .m span{font-size:11.5px;color:#8fb5a4}
+  .slot button{width:auto;padding:7px 12px;font-size:12.5px;flex:0 0 auto}
+  .f{margin-bottom:8px}
+  .f label{display:block;font-size:11.5px;color:#8fb5a4}
+  .f input,input,select,textarea{width:100%;font-size:14px;padding:9px;border-radius:8px;border:1px solid #2c5b49;background:#0a1c16;color:#e8f1ec}
+  .f .w{font-size:11.5px;color:#4fd39a;margin-top:2px}
+  .f.bad input{border-color:#c96a4f;background:#25130d}
+  .f.bad .w{color:#f0b48f}
+  .hint{font-size:12.5px;color:#8fb5a4}
+  .rec{background:#0a1c16;border:1px solid #22493a;border-radius:9px;padding:9px;margin-bottom:8px}
+  .rec .n{font-weight:600;font-size:13.5px}
+  .rec .s{font-size:11.5px;color:#8fb5a4}
+  .rec .b{display:flex;gap:6px;margin-top:7px}
+  .rec .b button{padding:7px;font-size:12.5px}
+  .two{display:flex;gap:7px;margin-top:8px}
+  #toast{display:none;position:fixed;left:10px;right:10px;bottom:10px;background:#17372c;border:1px solid #2f9e6f;border-radius:10px;padding:11px 13px;font-size:13px;z-index:20;box-shadow:0 8px 24px rgba(0,0,0,.5)}
+  .lbl{font-size:12px;color:#8fb5a4;margin:8px 0 3px}
+  .slot img{cursor:zoom-in}
+  #lb{display:none;position:fixed;inset:0;background:rgba(3,10,8,.95);z-index:99;padding:12px;overflow:auto;text-align:center}
+  #lb img{max-width:100%;background:#fff;border-radius:6px;margin-bottom:10px}
+  #lb .cap{color:#a9cdbd;font-size:12.5px;margin-bottom:6px}
   #lb button{width:auto;padding:9px 16px;margin-bottom:10px}
 </style>
 </head>
 <body>
-  <div class="top"><h1>মোবাইল ক্যামেরা</h1><div id="st">যুক্ত হচ্ছে…</div></div>
+  <div class="top"><h1>নতুন কুঁড়ি — স্ক্যান</h1><div id="conn"></div></div>
 
-  <div class="grid" id="grid"></div>
+  <div class="tabs">
+    <button id="t_scan" class="on">স্ক্যান</button>
+    <button id="t_list">তালিকা (<span id="cnt">0</span>)</button>
+    <button id="t_set">সেটিং</button>
+  </div>
 
-  <label class="opt"><input type="checkbox" id="auto"> কাগজের কিনারা নিজে থেকে কেটে সোজা করবে</label>
-  <div id="msg">যে কাগজের ঘরে চাপ দেবেন, ফোনের ক্যামেরা খুলবে। ছবি তোলার পর দেখে ✔ দিলে কম্পিউটারে যাবে, ✘ দিলে বাদ।</div>
-
-  <div id="lb"></div>
-  <div id="pv">
-    <div class="cap" id="pvcap"></div>
-    <div class="box"><img id="pvimg"></div>
-    <div class="btns">
-      <button class="no" id="pvno">✘ আবার তুলবো</button>
-      <button class="ok" id="pvok">✔ কম্পিউটারে পাঠাও</button>
+  <div id="p_scan">
+    <div class="card">
+      <div id="slots"></div>
+      <button class="go" id="read">কাগজ পড়ো</button>
+    </div>
+    <div class="card">
+      <div id="fields"></div>
+      <div class="two"><button class="go" id="save">তালিকায় রাখো</button><button id="newRec">নতুন ছাত্র</button></div>
+      <div class="two"><button id="sendOne">এই তথ্য এখনই কম্পিউটারে পাঠাও</button></div>
     </div>
   </div>
 
+  <div id="p_set" style="display:none">
+    <div class="card">
+      <div class="lbl">কাগজ পড়ার সেবা</div>
+      <select id="provider"></select>
+      <div class="lbl" id="keyHint"></div>
+      <textarea id="keys" rows="3" placeholder="API key — একাধিক হলে প্রতি লাইনে একটি"></textarea>
+      <div class="lbl">মডেল (বাছুন বা নিজে লিখুন)</div>
+      <input id="model" list="models" placeholder="মডেলের নাম"><datalist id="models"></datalist>
+      <div class="lbl" id="baseLbl">সেবার ঠিকানা (base URL)</div>
+      <input id="baseUrl" placeholder="https://…/v1">
+      <div class="lbl">কাজের ধরন</div>
+      <select id="mode">
+        <option value="list">তালিকায় জমাবো (ক্লাসে ঘুরে স্ক্যান)</option>
+        <option value="live">সরাসরি কম্পিউটারে পাঠাবো</option>
+      </select>
+      <label style="display:flex;gap:8px;align-items:center;margin-top:10px;font-size:13px"><input type="checkbox" id="bw" style="width:auto"> কাগজ সাদা-কালো স্ক্যান (কিনারা কেটে সোজা করে)</label>
+      <div class="lbl">কম্পিউটারের কোড (QR স্ক্যান করলে নিজেই বসে)</div>
+      <input id="code" placeholder="nk……">
+      <div class="two"><button id="doConnect">যুক্ত হও</button><button class="go" id="saveSet">সংরক্ষণ</button></div>
+    </div>
+    <div class="card">
+      <div class="lbl">সব ছাত্রের জন্য একই তথ্য — একবার লিখে রাখুন</div>
+      <div id="consts"></div>
+      <button class="go" id="saveSet2" style="display:none"></button>
+    </div>
+  </div>
+
+  <div id="p_list" style="display:none">
+    <div class="card">
+      <div id="list"></div>
+      <div class="two"><button class="go" id="sendList">কম্পিউটারে পাঠাও</button><button id="csv">CSV নামাও</button></div>
+      <div class="two"><button id="wipe">সব মুছুন</button></div>
+      <div class="hint" style="margin-top:8px">তালিকা ও ছবি এই ফোনেই জমা থাকে। কম্পিউটারে পাঠানোর পর প্রতি ছাত্রের ছবি নিজে থেকেই যাবে — ফোনটি যুক্ত রাখুন।</div>
+    </div>
+  </div>
+
+  <div id="toast"></div>
+  <div id="lb"></div>
+
+<script src="https://js.puter.com/v2/"></script>
 <script src="https://unpkg.com/peerjs@1.5.4/dist/peerjs.min.js"></script>
 <script>/* কাগজের কিনারা খুঁজে বাইরের অংশ বাদ দিয়ে পেজ সোজা করে সাদা-কালো করার অংশ */
 (() => {
@@ -379,37 +430,621 @@ window.NKFX = {
 };
 })();
 </script>
-<script>
-const LABEL = {
-  __photo: 'ছাত্রের ছবি', __birth: 'জন্ম নিবন্ধন', __nid: 'অভিভাবকের এনআইডি',
-  __certificate: 'প্রত্যয়নপত্র', __extra1: 'ভর্তি রেজি. / ফলাফল', __extra2: 'আইডি / প্রত্যয়নের কপি'
+<script>/* আসল ফরম অনুযায়ী ঘরের তালিকা, ড্রপডাউনের মান ও যাচাইয়ের নিয়ম */
+(() => {
+if (typeof window !== 'undefined' && window.NK) return;
+
+const MONTHS_BN = ['জানুয়ারি', 'ফেব্রুয়ারি', 'মার্চ', 'এপ্রিল', 'মে', 'জুন',
+  'জুলাই', 'আগস্ট', 'সেপ্টেম্বর', 'অক্টোবর', 'নভেম্বর', 'ডিসেম্বর'];
+const MONTHS_EN = ['January', 'February', 'March', 'April', 'May', 'June',
+  'July', 'August', 'September', 'October', 'November', 'December'];
+const CLASS_BN = {
+  1: ['প্রথম', '১ম'], 2: ['দ্বিতীয়', '২য়'], 3: ['তৃতীয়', '৩য়'], 4: ['চতুর্থ', '৪র্থ'],
+  5: ['পঞ্চম', '৫ম'], 6: ['ষষ্ঠ', '৬ষ্ঠ'], 7: ['সপ্তম', '৭ম'], 8: ['অষ্টম', '৮ম'],
+  9: ['নবম', '৯ম'], 10: ['দশম', '১০ম']
 };
-const thumbs = {};
-let conn = null, pending = null, busy = false;
+
+const NK = {
+  /* ফরমে যে তথ্যগুলো লাগে — এগুলোই কাগজ থেকে পড়া হয় ও টেবিলে দেখানো হয় */
+  FIELDS: [
+    { k: 'খেলোয়াড়ের নাম (বাংলা)', ocr: 'জন্ম নিবন্ধন' },
+    { k: 'Full Name (English)', ocr: 'জন্ম নিবন্ধন' },
+    { k: 'জন্ম নিবন্ধন নম্বর', ocr: 'জন্ম নিবন্ধন' },
+    { k: 'জন্ম তারিখ', ocr: 'জন্ম নিবন্ধন' },
+    { k: 'লিঙ্গ', ocr: 'জন্ম নিবন্ধন' },
+    { k: 'পিতার নাম', ocr: 'জন্ম নিবন্ধন' },
+    { k: 'মাতার নাম', ocr: 'জন্ম নিবন্ধন' },
+    { k: 'অভিভাবকের নাম', ocr: 'এনআইডি' },
+    { k: 'অভিভাবকের এনআইডি', ocr: 'এনআইডি' },
+    { k: 'মোবাইল নম্বর', ocr: '' },
+    { k: 'শিক্ষা প্রতিষ্ঠানের নাম', ocr: 'প্রত্যয়নপত্র' },
+    { k: 'শ্রেণি', ocr: 'প্রত্যয়নপত্র' },
+    { k: 'রোল নম্বর', ocr: 'প্রত্যয়নপত্র', opt: true },
+    { k: 'বিভাগ', ocr: 'জন্ম নিবন্ধন' },
+    { k: 'জেলা', ocr: 'জন্ম নিবন্ধন' },
+    { k: 'উপজেলা / সিটি কর্পোরেশন / পৌরসভা', ocr: 'জন্ম নিবন্ধন' },
+    { k: 'ইউনিয়ন / ওয়ার্ড', ocr: 'জন্ম নিবন্ধন' },
+    { k: 'ইভেন্ট - ১', ocr: '' },
+    { k: 'ইভেন্ট - ২', ocr: '', opt: true }
+  ],
+
+  /* ফরমের যে ঘরগুলো মেলাতে হবে। src = উপরের কোন তথ্য থেকে মান নেবে */
+  TARGETS: [
+    { key: 'খেলোয়াড়ের নাম (বাংলা)', src: 'খেলোয়াড়ের নাম (বাংলা)' },
+    { key: 'Full Name (English)', src: 'Full Name (English)' },
+    { key: 'জন্ম নিবন্ধন নম্বর', src: 'জন্ম নিবন্ধন নম্বর' },
+    { key: 'জন্ম তারিখ — বছর', src: 'জন্ম তারিখ', part: 'y' },
+    { key: 'জন্ম তারিখ — মাস', src: 'জন্ম তারিখ', part: 'm' },
+    { key: 'জন্ম তারিখ — দিন', src: 'জন্ম তারিখ', part: 'd' },
+    { key: 'লিঙ্গ', src: 'লিঙ্গ' },
+    { key: 'পিতার নাম', src: 'পিতার নাম' },
+    { key: 'মাতার নাম', src: 'মাতার নাম' },
+    { key: 'অভিভাবকের নাম', src: 'অভিভাবকের নাম' },
+    { key: 'অভিভাবকের এনআইডি', src: 'অভিভাবকের এনআইডি' },
+    { key: 'মোবাইল নম্বর', src: 'মোবাইল নম্বর' },
+    { key: 'শিক্ষা প্রতিষ্ঠানের নাম', src: 'শিক্ষা প্রতিষ্ঠানের নাম' },
+    { key: 'শ্রেণি', src: 'শ্রেণি', cls: true },
+    { key: 'রোল নম্বর', src: 'রোল নম্বর' },
+    { key: 'স্থায়ী ঠিকানা — বিভাগ', src: 'বিভাগ', group: 'addr', order: 1, geo: 'div' },
+    { key: 'স্থায়ী ঠিকানা — জেলা', src: 'জেলা', group: 'addr', order: 2, geo: 'dist' },
+    { key: 'স্থায়ী ঠিকানা — উপজেলা', src: 'উপজেলা / সিটি কর্পোরেশন / পৌরসভা', group: 'addr', order: 3, geo: 'upa' },
+    { key: 'স্থায়ী ঠিকানা — ইউনিয়ন/ওয়ার্ড', src: 'ইউনিয়ন / ওয়ার্ড', group: 'addr', order: 4, geo: 'uni' },
+    { key: 'খেলার স্থান — বিভাগ', src: 'খেলার স্থান — বিভাগ', fallback: 'বিভাগ', group: 'venue', order: 1, geo: 'div' },
+    { key: 'খেলার স্থান — জেলা', src: 'খেলার স্থান — জেলা', fallback: 'জেলা', group: 'venue', order: 2, geo: 'dist' },
+    { key: 'খেলার স্থান — উপজেলা', src: 'খেলার স্থান — উপজেলা', fallback: 'উপজেলা / সিটি কর্পোরেশন / পৌরসভা', group: 'venue', order: 3, geo: 'upa' },
+    { key: 'খেলার স্থান — ইউনিয়ন/ওয়ার্ড', src: 'খেলার স্থান — ইউনিয়ন/ওয়ার্ড', fallback: 'ইউনিয়ন / ওয়ার্ড', group: 'venue', order: 4, geo: 'uni' },
+    { key: 'ইভেন্ট - ১', src: 'ইভেন্ট - ১' },
+    { key: 'ইভেন্ট - ২', src: 'ইভেন্ট - ২' }
+  ],
+
+  FILE_SLOTS: {
+    __photo: 'ছবি (Auto Crop)',
+    __birth: 'জন্ম নিবন্ধন',
+    __nid: 'অভিভাবকের এনআইডি',
+    __certificate: 'প্রতিষ্ঠানের প্রত্যয়নপত্র',
+    __extra1: 'ভর্তি রেজি. কার্ড / বার্ষিক ফলাফল',
+    __extra2: 'স্টুডেন্ট আইডি / প্রত্যয়নের কপি'
+  },
+
+  DOC_SLOTS: {
+    __birth: 'জন্ম নিবন্ধন সনদ',
+    __nid: 'অভিভাবকের জাতীয় পরিচয়পত্র (এনআইডি)',
+    __certificate: 'শিক্ষা প্রতিষ্ঠান প্রধানের প্রত্যয়নপত্র'
+  },
+
+  PINNABLE: [
+    'শিক্ষা প্রতিষ্ঠানের নাম', 'লিঙ্গ', 'শ্রেণি', 'মোবাইল নম্বর',
+    'বিভাগ', 'জেলা', 'উপজেলা / সিটি কর্পোরেশন / পৌরসভা', 'ইউনিয়ন / ওয়ার্ড',
+    'খেলার স্থান — বিভাগ', 'খেলার স্থান — জেলা', 'খেলার স্থান — উপজেলা', 'খেলার স্থান — ইউনিয়ন/ওয়ার্ড',
+    'ইভেন্ট - ১', 'ইভেন্ট - ২'
+  ],
+
+  DOB_MIN: '2012-09-01',
+  DOB_MAX: '2016-08-31',
+
+  ascii(v) { return String(v == null ? '' : v).replace(/[০-৯]/g, (d) => String('০১২৩৪৫৬৭৮৯'.indexOf(d))); },
+  bangla(v) { return String(v == null ? '' : v).replace(/[0-9]/g, (d) => '০১২৩৪৫৬৭৮৯'[+d]); },
+  digits(v) { return NK.ascii(v).replace(/\D/g, ''); },
+
+  toISO(v) {
+    const s = NK.ascii(v).trim();
+    let m = s.match(/^(\d{4})[-/.](\d{1,2})[-/.](\d{1,2})$/);
+    if (m) return m[1] + '-' + String(m[2]).padStart(2, '0') + '-' + String(m[3]).padStart(2, '0');
+    m = s.match(/^(\d{1,2})[-/.](\d{1,2})[-/.](\d{4})$/);
+    if (m) return m[3] + '-' + String(m[2]).padStart(2, '0') + '-' + String(m[1]).padStart(2, '0');
+    return null;
+  },
+
+  /* একটি ঘরে বসানোর জন্য সম্ভাব্য মানগুলো — ড্রপডাউনে যেটা মেলে সেটাই বসে */
+  candidates(target, val) {
+    const raw = String(val == null ? '' : val).trim();
+    if (!raw) return [];
+    const out = [];
+    const push = (x) => { if (x && out.indexOf(String(x)) < 0) out.push(String(x)); };
+
+    if (target.part) {
+      const iso = NK.toISO(raw);
+      if (!iso) return [];
+      const [y, m, d] = iso.split('-');
+      if (target.part === 'y') { push(y); push(NK.bangla(y)); }
+      if (target.part === 'm') {
+        const i = parseInt(m, 10) - 1;
+        push(MONTHS_BN[i]); push(MONTHS_EN[i]); push(MONTHS_EN[i].slice(0, 3));
+        push(m); push(String(i + 1)); push(NK.bangla(m)); push(NK.bangla(String(i + 1)));
+      }
+      if (target.part === 'd') {
+        const n = String(parseInt(d, 10));
+        push(d); push(n); push(NK.bangla(d)); push(NK.bangla(n));
+      }
+      return out;
+    }
+
+    if (target.cls) {
+      const n = parseInt(NK.digits(raw), 10);
+      push(raw);
+      if (n && CLASS_BN[n]) {
+        CLASS_BN[n].forEach((name) => { push(name); push(name + ' শ্রেণি'); });
+        push(String(n)); push(NK.bangla(String(n)));
+      }
+      return out;
+    }
+
+    push(raw);
+    if (/^[০-৯\d\s\-/.]+$/.test(raw)) { push(NK.ascii(raw)); push(NK.bangla(raw)); }
+    if (target.geo && typeof window !== 'undefined' && window.NKGEO) {
+      window.NKGEO.candidates(target.geo, raw).forEach(push);
+    }
+    return out;
+  },
+
+  check(key, val) {
+    const f = NK.FIELDS.find((x) => x.k === key);
+    const v = String(val == null ? '' : val).trim();
+    if (key === 'জন্ম নিবন্ধন নম্বর') {
+      const d = NK.digits(v);
+      if (!d) return 'পড়া যায়নি — সনদ দেখে বসান';
+      if (d.length !== 17) return d.length + ' অঙ্ক পাওয়া গেছে, হতে হবে ১৭ অঙ্ক';
+      return '';
+    }
+    if (key === 'অভিভাবকের এনআইডি') {
+      const d = NK.digits(v);
+      if (!d) return 'পড়া যায়নি — এনআইডি দেখে বসান';
+      if ([10, 13, 17].indexOf(d.length) < 0) return d.length + ' অঙ্ক পাওয়া গেছে, হতে হবে ১০/১৩/১৭ অঙ্ক';
+      return '';
+    }
+    if (key === 'মোবাইল নম্বর') {
+      const d = NK.digits(v);
+      if (!d) return 'মোবাইল নম্বর বসান';
+      if (!/^01\d{9}$/.test(d)) return '০১ দিয়ে শুরু ১১ অঙ্ক হতে হবে';
+      return '';
+    }
+    if (key === 'জন্ম তারিখ') {
+      const iso = NK.toISO(v);
+      if (!iso) return 'তারিখ পড়া যায়নি — দিন/মাস/বছর আকারে বসান';
+      if (iso < NK.DOB_MIN || iso > NK.DOB_MAX) return 'বয়স সীমার বাইরে (০১/০৯/২০১২ – ৩১/০৮/২০১৬)';
+      return '';
+    }
+    if (!v) return (f && f.opt) ? '' : 'ফাঁকা আছে';
+    return '';
+  }
+};
+
+if (typeof window !== 'undefined') window.NK = NK;
+})();
+</script>
+<script>/* কাগজ পড়ার অংশ — একাধিক key ও মডেল নিয়ে চেষ্টা করে, ব্যস্ত থাকলে নিজেই আবার চেষ্টা করে */
+(() => {
+  if (window.NKOCR) return;
+
+  const sleep = (ms) => new Promise((r) => setTimeout(r, ms));
+  const OUT_CAP = 800;   // ফ্রি সীমার নিচে থাকার জন্য আউটপুট টোকেনের ছাদ
+
+  /* base64 → File (Puter.js ফাইল হিসেবেই ছবি নেয়) */
+  function b64ToFile(b64, name) {
+    const bin = atob(b64);
+    const u8 = new Uint8Array(bin.length);
+    for (let i = 0; i < bin.length; i++) u8[i] = bin.charCodeAt(i);
+    return new File([u8], name, { type: 'image/jpeg' });
+  }
+
+  /* নানা সেবার নানা ধরনের উত্তর থেকে লেখাটা বের করা */
+  function textOf(c) {
+    if (!c) return '';
+    if (typeof c === 'string') return c;
+    if (Array.isArray(c)) return c.map((x) => (typeof x === 'string' ? x : (x.text || x.content || ''))).join('\n');
+    return c.text || c.content || '';
+  }
+
+  function anyText(r) {
+    if (!r) return '';
+    if (typeof r === 'string') return r;
+    if (r.message) return textOf(r.message.content);
+    if (r.choices && r.choices[0]) return textOf(r.choices[0].message && r.choices[0].message.content);
+    if (r.text) return r.text;
+    if (r.content) return textOf(r.content);
+    return '';
+  }
+
+
+  /* OpenAI-ধাঁচের যেকোনো সেবার জন্য একই কল (Groq, OpenRouter, নিজের ঠিকানা) */
+  async function oai(url, images, promptText, key, model, extraHeaders, tokenKey) {
+    const content = [];
+    images.forEach((im) => {
+      content.push({ type: 'text', text: 'নিচের ছবিটি: ' + im.label });
+      content.push({ type: 'image_url', image_url: { url: 'data:image/jpeg;base64,' + im.b64 } });
+    });
+    content.push({ type: 'text', text: promptText });
+
+    const body = { model: model, messages: [{ role: 'user', content: content }] };
+    body[tokenKey === 'max_completion_tokens' ? 'max_completion_tokens' : 'max_tokens'] = OUT_CAP;
+    body.temperature = 0;
+
+    /* কোনো প্যারামিটার নিয়ে আপত্তি করলে সেটি বদলে বা বাদ দিয়ে আবার চেষ্টা */
+    for (let attempt = 0; attempt < 4; attempt++) {
+      const res = await fetch(url, {
+        method: 'POST',
+        headers: Object.assign(
+          { 'content-type': 'application/json', authorization: 'Bearer ' + key },
+          extraHeaders || {}
+        ),
+        body: JSON.stringify(body)
+      });
+      const data = await res.json().catch(() => ({}));
+
+      if (res.ok) {
+        const ch = (data.choices || [])[0];
+        if (!ch) throw new Error('সেবা কোনো উত্তর দেয়নি');
+        return (ch.message && ch.message.content) || '';
+      }
+
+      const msg = String((data.error && (data.error.message || data.error)) || ('HTTP ' + res.status));
+      let fixed = false;
+      if (/max_completion_tokens/i.test(msg) && 'max_tokens' in body) {
+        delete body.max_tokens; body.max_completion_tokens = OUT_CAP; fixed = true;
+      } else if (/max_tokens/i.test(msg) && /unsupported|not supported|instead/i.test(msg) && 'max_completion_tokens' in body) {
+        delete body.max_completion_tokens; body.max_tokens = OUT_CAP; fixed = true;
+      } else if (/temperature/i.test(msg) && 'temperature' in body) {
+        delete body.temperature; fixed = true;
+      } else if (/image_url|image|multimodal|content/i.test(msg) && /unsupported|invalid/i.test(msg) && res.status === 400 && !body.__flat) {
+        // কিছু সেবা শুধু লেখা নেয় — তখন আর চেষ্টা করে লাভ নেই
+        fixed = false;
+      }
+      if (!fixed) {
+        const err = new Error(msg);
+        err.status = res.status;
+        throw err;
+      }
+    }
+    throw new Error('সেবাটি অনুরোধ নিচ্ছে না');
+  }
+
+  const PROVIDERS = {
+    puter: {
+      name: 'Puter.js — key ছাড়া ফ্রি (ফোনের পেজে)',
+      pageOnly: true,
+      noKey: true,
+      models: ['google/gemini-3.8-flash', 'google/gemini-3.5-flash', 'google/gemini-3.5-flash-lite', 'openai/gpt-5.4-nano'],
+      fallback: ['google/gemini-3.5-flash', 'google/gemini-3.5-flash-lite'],
+      keyHint: 'API key লাগে না। প্রথমবার Puter-এ সাইন-ইন করতে বলবে (ফ্রি অ্যাকাউন্ট), তারপর আর চাইবে না।',
+      async run(images, promptText, key, model) {
+        if (typeof puter === 'undefined' || !puter.ai) {
+          throw new Error('Puter.js এই পেজে নেই — ফোনের scan.html থেকে চেষ্টা করুন');
+        }
+        const order = images.map((im, i) => 'ছবি ' + (i + 1) + ': ' + im.label).join('\n');
+        const prompt = (order ? order + '\n\n' : '') + promptText;
+        const files = images.map((im, i) => b64ToFile(im.b64, 'doc' + (i + 1) + '.jpg'));
+        let resp;
+        if (!files.length) resp = await puter.ai.chat(prompt, false, { model: model });
+        else if (files.length === 1) resp = await puter.ai.chat(prompt, files[0], false, { model: model });
+        else resp = await puter.ai.chat(prompt, files, false, { model: model });
+        const out = anyText(resp);
+        if (!out) throw new Error('Puter কোনো লেখা ফেরত দেয়নি');
+        return out;
+      }
+    },
+
+    gemini: {
+      name: 'Google Gemini (ফ্রি)',
+      models: ['gemini-2.5-flash', 'gemini-2.5-flash-lite', 'gemini-2.0-flash', 'gemini-3-flash'],
+      fallback: ['gemini-2.5-flash-lite', 'gemini-2.0-flash'],
+      keyHint: 'aistudio.google.com → Create API key (ফ্রি)',
+      async run(images, promptText, key, model, cfg) {
+        const parts = [];
+        images.forEach((im) => {
+          parts.push({ text: 'নিচের ছবিটি: ' + im.label });
+          parts.push({ inline_data: { mime_type: 'image/jpeg', data: im.b64 } });
+        });
+        parts.push({ text: promptText });
+        const res = await fetch('https://generativelanguage.googleapis.com/v1beta/models/' +
+          encodeURIComponent(model) + ':generateContent', {
+          method: 'POST',
+          headers: { 'content-type': 'application/json', 'x-goog-api-key': key },
+          body: JSON.stringify({
+            contents: [{ role: 'user', parts }],
+            generationConfig: { temperature: 0, response_mime_type: 'application/json', maxOutputTokens: OUT_CAP }
+          })
+        });
+        const data = await res.json().catch(() => ({}));
+        if (!res.ok) {
+          const err = new Error((data.error && data.error.message) || ('HTTP ' + res.status));
+          err.status = res.status;
+          throw err;
+        }
+        const cand = (data.candidates || [])[0];
+        if (!cand) throw new Error('সেবা কোনো উত্তর দেয়নি');
+        return (cand.content && cand.content.parts || []).map((p) => p.text || '').join('\n');
+      }
+    },
+
+    groq: {
+      name: 'Groq (ফ্রি, কার্ড লাগে না)',
+      models: ['meta-llama/llama-4-scout-17b-16e-instruct', 'qwen/qwen3.6-27b', 'meta-llama/llama-4-maverick-17b-128e-instruct'],
+      fallback: ['qwen/qwen3.6-27b', 'meta-llama/llama-4-maverick-17b-128e-instruct'],
+      keyHint: 'console.groq.com/keys → Create API Key (ফ্রি, কার্ড ছাড়া)',
+      run: (images, promptText, key, model) =>
+        oai('https://api.groq.com/openai/v1/chat/completions', images, promptText, key, model,
+          null, 'max_completion_tokens')
+    },
+
+    openai: {
+      name: 'OpenAI / ChatGPT API (key লাগে)',
+      models: ['gpt-6-astra', 'gpt-6-astra-pro', 'gpt-5.6-luna'],
+      fallback: ['gpt-5.6-luna'],
+      keyHint: 'platform.openai.com/api-keys → Create secret key (sk-…)',
+      run: (images, promptText, key, model) =>
+        oai('https://api.openai.com/v1/chat/completions', images, promptText, key, model,
+          null, 'max_completion_tokens')
+    },
+
+    huggingface: {
+      name: 'Hugging Face Router (মাসিক ফ্রি কোটা)',
+      models: [
+        'meta-llama/Llama-4-Scout-17B-16E-Instruct:groq',
+        'meta-llama/Llama-4-Maverick-17B-128E-Instruct:groq',
+        'Qwen/Qwen2.5-VL-72B-Instruct',
+        'zai-org/GLM-4.6V'
+      ],
+      fallback: ['Qwen/Qwen2.5-VL-72B-Instruct'],
+      keyHint: 'huggingface.co/settings/tokens → নতুন token, “Make calls to Inference Providers” অনুমতি দিয়ে',
+      run: (images, promptText, key, model) =>
+        oai('https://router.huggingface.co/v1/chat/completions', images, promptText, key, model)
+    },
+
+    openrouter: {
+      name: 'OpenRouter (যেকোনো মডেল, টাকা লাগে)',
+      models: ['openai/gpt-6-astra', 'openai/gpt-6-astra-pro', 'google/gemini-2.5-flash', 'qwen/qwen2.5-vl-72b-instruct'],
+      fallback: [],
+      keyHint: 'openrouter.ai/keys — ফ্রি মডেলগুলো ছবির কাজে দুর্বল, gpt-6-astra পেইড',
+      run: (images, promptText, key, model) =>
+        oai('https://openrouter.ai/api/v1/chat/completions', images, promptText, key, model,
+          { 'HTTP-Referer': 'https://notunkurisports.gov.bd', 'X-Title': 'Notun Kuri Form Helper' })
+    },
+
+    custom: {
+      name: 'নিজের ঠিকানা (OpenAI-ধাঁচের যেকোনো সেবা)',
+      models: [],
+      fallback: [],
+      keyHint: 'সেবার ঠিকানা (base URL) ও মডেলের নাম নিজে লিখুন',
+      run: (images, promptText, key, model, cfg) => {
+        let base = String((cfg && cfg.baseUrl) || '').trim().replace(/\/+$/, '');
+        if (!base) throw new Error('সেবার ঠিকানা (base URL) বসানো হয়নি');
+        if (base.indexOf('/chat/completions') < 0) base += '/chat/completions';
+        return oai(base, images, promptText, key, model);
+      }
+    },
+
+    anthropic: {
+      name: 'Anthropic Claude (টাকা লাগে)',
+      models: ['claude-sonnet-5', 'claude-haiku-4-5-20251001', 'claude-opus-5'],
+      fallback: [],
+      keyHint: 'console.anthropic.com → API keys',
+      async run(images, promptText, key, model, cfg) {
+        const content = [];
+        images.forEach((im) => {
+          content.push({ type: 'text', text: 'নিচের ছবিটি: ' + im.label });
+          content.push({ type: 'image', source: { type: 'base64', media_type: 'image/jpeg', data: im.b64 } });
+        });
+        content.push({ type: 'text', text: promptText });
+        const res = await fetch('https://api.anthropic.com/v1/messages', {
+          method: 'POST',
+          headers: {
+            'content-type': 'application/json',
+            'x-api-key': key,
+            'anthropic-version': '2023-06-01',
+            'anthropic-dangerous-direct-browser-access': 'true'
+          },
+          body: JSON.stringify({ model, max_tokens: 2000, messages: [{ role: 'user', content }] })
+        });
+        const data = await res.json().catch(() => ({}));
+        if (!res.ok) {
+          const err = new Error((data.error && data.error.message) || ('HTTP ' + res.status));
+          err.status = res.status;
+          throw err;
+        }
+        return (data.content || []).filter((b) => b.type === 'text').map((b) => b.text).join('\n');
+      }
+    }
+  };
+
+  function buildPrompt(fields) {
+    const lines = fields.map((f, i) =>
+      (i + 1) + '. ' + f.k + (f.ocr ? '  → ' + f.ocr + ' থেকে' : '  → কাগজে না থাকলে ফাঁকা'));
+    return 'তুমি বাংলাদেশের সরকারি কাগজপত্র পড়ে তথ্য তুলে দেওয়ার সহকারী। উপরের ছবিগুলো ভালো করে দেখে নিচের ঘরগুলো পূরণ করো।\n\n' +
+      'ঘরের তালিকা (নম্বর সহ):\n' + lines.join('\n') + '\n\n' +
+      'নিয়ম:\n' +
+      '১. শিক্ষার্থীর নাম, জন্ম তারিখ, জন্ম নিবন্ধন নম্বর, পিতা-মাতার নাম, ঠিকানা — জন্ম নিবন্ধন সনদ থেকে।\n' +
+      '২. অভিভাবকের নাম ও এনআইডি নম্বর — এনআইডির ছবি থেকে।\n' +
+      '৩. প্রতিষ্ঠানের নাম, শ্রেণি, রোল — প্রত্যয়নপত্র থেকে।\n' +
+      '৪. বাংলা নাম বাংলা হরফে, কাগজে যেভাবে আছে হুবহু সেভাবে। ইংরেজি নাম বড় হাতের অক্ষরে।\n' +
+      '৫. সব সংখ্যা ইংরেজি অঙ্কে, ফাঁকা বা ড্যাশ ছাড়া। জন্ম নিবন্ধন নম্বর সাধারণত ১৭ অঙ্কের — অঙ্ক গুনে দাও।\n' +
+      '৬. জন্ম তারিখ DD/MM/YYYY আকারে। লিঙ্গ শুধু "বালক" বা "বালিকা"। শ্রেণি শুধু সংখ্যায়।\n' +
+      '৭. ঠিকানার ঘরে শুধু নামটি — "উপজেলা"/"জেলা" শব্দ যোগ করবে না।\n' +
+      '৮. স্পষ্ট না থাকলে "" রাখো, অনুমান করবে না।\n\n' +
+      'উত্তর দাও শুধু একটি ছোট JSON — চাবি হবে উপরের নম্বর, আর কোনো লেখা নয়। যেমন:\n' +
+      '{"1":"...","2":"...","3":""}';
+  }
+
+  /* নম্বরের চাবিগুলো ঘরের নামে ফেরানো */
+  function normalize(obj, fields) {
+    const out = {};
+    fields.forEach((f, i) => {
+      let v = obj[String(i + 1)];
+      if (v == null) v = obj[i + 1];
+      if (v == null) v = obj[f.k];
+      out[f.k] = v == null ? '' : String(v).trim();
+    });
+    return out;
+  }
+
+  /* প্রথম পূর্ণ JSON অবজেক্টটি বের করে আনা — পরে বাড়তি লেখা বা দ্বিতীয় অবজেক্ট থাকলেও চলে */
+  function cutJSON(text) {
+    const s = String(text || '').replace(/```json|```/g, '');
+    const start = s.indexOf('{');
+    if (start < 0) return '';
+    let depth = 0, inStr = false, esc = false;
+    for (let i = start; i < s.length; i++) {
+      const c = s[i];
+      if (inStr) {
+        if (esc) esc = false;
+        else if (c === '\\') esc = true;
+        else if (c === '"') inStr = false;
+        continue;
+      }
+      if (c === '"') { inStr = true; continue; }
+      if (c === '{') depth++;
+      else if (c === '}') {
+        depth--;
+        if (depth === 0) return s.slice(start, i + 1);
+      }
+    }
+    return s.slice(start);   // শেষ না হলে যা আছে
+  }
+
+  /* উত্তর মাঝপথে থেমে গেলে শেষ পূর্ণ ঘর পর্যন্ত রেখে বন্ধ করা */
+  function repair(cut) {
+    let t = cut.replace(/,\s*$/, '');
+    const last = t.lastIndexOf('",');
+    if (t.indexOf('}') < 0 && last > 0) t = t.slice(0, last + 1);
+    else t = t.replace(/[^"}\]]*$/, '');
+    if (!/"\s*$/.test(t) && !/[}\]]\s*$/.test(t)) t += '"';
+    const opens = (t.match(/{/g) || []).length, closes = (t.match(/}/g) || []).length;
+    return t + '}'.repeat(Math.max(0, opens - closes));
+  }
+
+  function parseJSON(text) {
+    const cut = cutJSON(text);
+    if (!cut) throw new Error('উত্তরে তথ্য পাওয়া যায়নি: ' + String(text || '').slice(0, 120));
+    try {
+      return JSON.parse(cut);
+    } catch (e) {
+      // শেষ } পর্যন্ত ধরে আরেকবার চেষ্টা
+      const s = String(text || '').replace(/```json|```/g, '');
+      const a = s.indexOf('{'), b = s.lastIndexOf('}');
+      if (a >= 0 && b > a) {
+        try { return JSON.parse(s.slice(a, b + 1)); } catch (e2) {}
+      }
+      try { return JSON.parse(repair(cut)); } catch (e3) {}
+      throw new Error('উত্তরটি পড়া গেল না: ' + cut.slice(0, 120));
+    }
+  }
+
+  const busyErr = (m) => /overload|high demand|unavailable|503|500|internal/i.test(m);
+  const quotaErr = (m) => /quota|rate|429|exhaust|limit|tpm|otpm|too large/i.test(m);
+
+  function keyList(cfg) {
+    const raw = cfg.apiKeys || cfg.apiKey || '';
+    return String(raw).split(/[\s,]+/).map((s) => s.trim()).filter(Boolean);
+  }
+
+  window.NKOCR = {
+    PROVIDERS,
+    buildPrompt,
+    parseJSON,
+
+    async read(cfg, images, fields, onStatus) {
+      const p = PROVIDERS[cfg.provider || 'gemini'];
+      if (!p) throw new Error('অজানা সেবা');
+      const keys = p.noKey ? [''] : keyList(cfg);
+      if (!keys.length) throw new Error('API key বসানো হয়নি');
+      const models = [cfg.model || p.models[0] || ''].concat(p.fallback)
+        .filter((m, i, a) => m && a.indexOf(m) === i);
+      const promptText = buildPrompt(fields);
+      let last = null;
+
+      for (const model of models) {
+        for (let ki = 0; ki < keys.length; ki++) {
+          for (let attempt = 0; attempt < 2; attempt++) {
+            try {
+              if (onStatus) {
+                onStatus('পড়া হচ্ছে — ' + model + (keys.length > 1 ? ' (key ' + (ki + 1) + ')' : '') +
+                  (attempt ? ' • আবার চেষ্টা' : ''));
+              }
+              const raw = parseJSON(await p.run(images, promptText, keys[ki], model, cfg));
+              return { data: normalize(raw, fields), model, keyIndex: ki };
+            } catch (e) {
+              last = e;
+              const m = e.message || '';
+              if (busyErr(m)) {
+                if (onStatus) onStatus('সেবা ব্যস্ত — ৩ সেকেন্ড পরে আবার চেষ্টা করছি…');
+                await sleep(3000);
+                continue;
+              }
+              if (quotaErr(m)) break;          // এই key/মডেলে কোটা শেষ — পরেরটা
+              if (e.status === 404) break;      // মডেলের নাম চলছে না — পরের মডেল
+              throw e;                          // key ভুল ইত্যাদি — সরাসরি জানাই
+            }
+          }
+        }
+      }
+      throw last || new Error('পড়া যায়নি');
+    },
+
+    async test(cfg) {
+      const p = PROVIDERS[cfg.provider || 'gemini'];
+      const keys = p.noKey ? [''] : keyList(cfg);
+      if (!keys.length) throw new Error('key নেই');
+      const out = [];
+      for (let i = 0; i < keys.length; i++) {
+        const label = 'key ' + (i + 1) + ': ';
+        try {
+          const text = await p.run([], 'শুধু এই JSON দাও, আর কিছু লিখবে না: {"ঠিক":"হ্যাঁ"}',
+            keys[i], cfg.model || p.models[0] || '', cfg);
+          try {
+            parseJSON(text);
+            out.push(label + 'ঠিক আছে ✔');
+          } catch (e) {
+            // উত্তর এসেছে মানে key ও মডেল দুটোই চলছে
+            out.push(label + (String(text || '').trim()
+              ? 'ঠিক আছে ✔ (উত্তর এসেছে)'
+              : 'সেবা ফাঁকা উত্তর দিয়েছে — মডেলের নাম দেখুন'));
+          }
+        } catch (e) {
+          out.push(label + e.message);
+        }
+      }
+      return out;
+    }
+  };
+})();
+</script>
+<script>/* মোবাইল স্ক্যান অ্যাপ — কাগজ স্ক্যান করে তালিকায় রাখে, পরে কম্পিউটারে পাঠায় */
 const $ = (id) => document.getElementById(id);
-const say = (t) => { $('msg').textContent = t; };
-const kb = (d) => Math.round((d.length * 0.75) / 1024);
+const esc = (s) => String(s == null ? '' : s).replace(/[&<>"]/g, (c) => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;' }[c]));
+const kb = (d) => Math.round((String(d).length * 0.75) / 1024);
+const LS = {
+  get: (k, d) => { try { const v = localStorage.getItem('nk_' + k); return v == null ? d : JSON.parse(v); } catch (e) { return d; } },
+  set: (k, v) => localStorage.setItem('nk_' + k, JSON.stringify(v))
+};
 
-function status(t, ok) {
-  $('st').innerHTML = ok ? 'কম্পিউটারে <b>যুক্ত</b>' : '<span class="off">' + t + '</span>';
+const SLOTS = NK.FILE_SLOTS;
+const DOCS = NK.DOC_SLOTS;
+
+let cur = { fields: {}, files: {}, ocr: {} };   // যেটা এখন স্ক্যান হচ্ছে
+let recs = [];                          // তালিকা (তথ্যসহ, ছবি ছাড়া)
+let conn = null, peer = null;
+let busy = false;
+
+/* ---------------- IndexedDB ---------------- */
+let db = null;
+function openDB() {
+  return new Promise((res, rej) => {
+    const r = indexedDB.open('nk_scan', 1);
+    r.onupgradeneeded = () => {
+      const d = r.result;
+      if (!d.objectStoreNames.contains('recs')) d.createObjectStore('recs', { keyPath: 'id' });
+    };
+    r.onsuccess = () => { db = r.result; res(db); };
+    r.onerror = () => rej(r.error);
+  });
 }
+const tx = (mode) => db.transaction('recs', mode).objectStore('recs');
+function dbPut(rec) { return new Promise((res, rej) => { const q = tx('readwrite').put(rec); q.onsuccess = res; q.onerror = () => rej(q.error); }); }
+function dbAll() { return new Promise((res, rej) => { const q = tx('readonly').getAll(); q.onsuccess = () => res(q.result || []); q.onerror = () => rej(q.error); }); }
+function dbGet(id) { return new Promise((res, rej) => { const q = tx('readonly').get(id); q.onsuccess = () => res(q.result); q.onerror = () => rej(q.error); }); }
+function dbDel(id) { return new Promise((res, rej) => { const q = tx('readwrite').delete(id); q.onsuccess = res; q.onerror = () => rej(q.error); }); }
 
-function render() {
-  $('grid').innerHTML = Object.keys(LABEL).map((k) => {
-    const d = thumbs[k];
-    return '<div class="card' + (d ? ' done' : '') + '">' +
-      (d ? '<img src="' + d + '" data-view="' + k + '">'
-         : '<button class="shot" data-cap="' + k + '">＋ ছবি তুলুন</button>') +
-      '<div class="row"><div class="t">' + LABEL[k] +
-      '<i>' + (d ? 'পাঠানো হয়েছে ✔ • ' + kb(d) + ' KB' : 'বাকি') + '</i></div>' +
-      (d ? '<button data-cap="' + k + '">আবার</button>' : '') +
-      '</div></div>';
-  }).join('');
-}
-
-/* ফোনের নিজের ক্যামেরা অ্যাপ খোলে — যা দেখবেন ঠিক তাই ওঠে */
-function openCamera(slot) {
-  if (busy) return;
+/* ---------------- ছবি ---------------- */
+function takePhoto(slot) {
   const inp = document.createElement('input');
   inp.type = 'file';
   inp.accept = 'image/*';
@@ -417,28 +1052,24 @@ function openCamera(slot) {
   inp.onchange = () => {
     const f = inp.files && inp.files[0];
     if (!f) return;
-    busy = true;
-    say('প্রসেস হচ্ছে…');
+    toast('প্রসেস হচ্ছে…');
     const fr = new FileReader();
     fr.onload = () => {
       const img = new Image();
       img.onload = () => setTimeout(() => {
-        try {
-          const auto = $('auto').checked;
-          const r = (slot === '__photo')
-            ? NKFX.photo(img)
-            : (auto ? NKFX.doc(img, { color: true }) : NKFX.plain(img));
-          pending = { slot: slot, out: r.out };
-          $('pvimg').src = r.out;
-          $('pvcap').textContent = LABEL[slot] + ' • ' + kb(r.out) + ' KB' +
-            (slot === '__photo' ? '' : (r.cropped ? ' • কিনারা কেটে সোজা করা হয়েছে'
-              : ($('auto').checked ? ' • কিনারা মেলেনি, যেমন তুলেছেন তেমনই' : ' • যেমন তুলেছেন তেমনই')));
-          $('pv').style.display = 'flex';
-          say('দেখে নিন — ঠিক থাকলে ✔ দিন।');
-        } catch (e) {
-          say('ছবি প্রসেস হয়নি: ' + e.message);
+        const isPhoto = slot === '__photo';
+        const r = isPhoto ? NKFX.photo(img) : NKFX.doc(img, { bw: LS.get('bw', true) });
+        cur.files[slot] = r.out;
+        if (r.ocr) cur.ocr[slot] = r.ocr; else delete cur.ocr[slot];
+        renderSlots();
+        if (isPhoto) toast('ছবি নেওয়া হয়েছে');
+        else toast(r.cropped
+          ? SLOTS[slot] + ' — কিনারা কেটে সোজা করা হয়েছে (' + kb(r.out) + ' KB)'
+          : SLOTS[slot] + ' — কিনারা পাওয়া যায়নি, পুরো ছবিই রাখা হলো। কাগজটি একরঙা মেঝে/টেবিলে রেখে আবার তুলুন।');
+        if (LS.get('mode', 'list') === 'live' && conn && conn.open) {
+          conn.send({ slot, dataURL: cur.files[slot], ocr: cur.ocr[slot] || null });
+          toast(SLOTS[slot] + ' কম্পিউটারে পাঠানো হয়েছে');
         }
-        busy = false;
       }, 30);
       img.src = fr.result;
     };
@@ -447,66 +1078,298 @@ function openCamera(slot) {
   inp.click();
 }
 
-function accept() {
-  if (!pending) return;
-  if (!conn || !conn.open) { say('কম্পিউটারের সাথে যুক্ত নয়। QR কোডটি আবার স্ক্যান করুন।'); return; }
-  conn.send({ slot: pending.slot, dataURL: pending.out });
-  thumbs[pending.slot] = pending.out;
-  say(LABEL[pending.slot] + ' কম্পিউটারে পাঠানো হয়েছে (' + kb(pending.out) + ' KB)।');
-  pending = null;
-  $('pv').style.display = 'none';
-  $('pvimg').src = '';
-  render();
+/* ---------------- কাগজ পড়া ---------------- */
+async function readDocs() {
+  if (busy) return;
+  const have = Object.keys(DOCS).filter((k) => cur.files[k]);
+  if (!have.length) { toast('আগে অন্তত একটি কাগজের ছবি তুলুন'); return; }
+  const cfg = {
+    provider: LS.get('provider', 'gemini'),
+    apiKeys: LS.get('keys', ''),
+    model: LS.get('model', ''),
+    baseUrl: LS.get('baseUrl', '')
+  };
+  const prov = NKOCR.PROVIDERS[cfg.provider] || {};
+  if (!prov.noKey && !cfg.apiKeys) { toast('সেটিং-এ API key বসান'); show('set'); return; }
+  busy = true;
+  $('read').textContent = 'পড়া হচ্ছে…';
+  try {
+    const images = have.map((k) => ({ label: DOCS[k], b64: (cur.ocr[k] || cur.files[k]).split(',')[1] }));
+    const out = await NKOCR.read(cfg, images, NK.FIELDS, toast);
+    const consts = LS.get('consts', {});
+    NK.FIELDS.forEach((f) => {
+      const v = out.data[f.k];
+      cur.fields[f.k] = (v != null && String(v).trim() !== '') ? String(v).trim() : (cur.fields[f.k] || consts[f.k] || '');
+    });
+    renderFields();
+    const bad = NK.FIELDS.filter((f) => NK.check(f.k, cur.fields[f.k])).length;
+    toast(bad ? 'পড়া হয়েছে — ' + bad + ' টি ঘর দেখে নিন' : 'পড়া হয়েছে, সব ঠিক দেখাচ্ছে');
+  } catch (e) {
+    toast('পড়া যায়নি: ' + e.message);
+    const consts = LS.get('consts', {});
+    NK.FIELDS.forEach((f) => { if (cur.fields[f.k] == null) cur.fields[f.k] = consts[f.k] || ''; });
+    renderFields();
+  } finally {
+    busy = false;
+    $('read').textContent = 'কাগজ পড়ো';
+  }
 }
 
-function reject() {
-  pending = null;
-  $('pv').style.display = 'none';
-  $('pvimg').src = '';
-  say('বাদ দেওয়া হলো — আবার ছবি তুলুন।');
+/* ---------------- সংরক্ষণ ও তালিকা ---------------- */
+async function saveRec() {
+  if (!Object.keys(cur.fields).length) { toast('আগে কাগজ পড়ুন বা ঘরগুলো লিখুন'); return; }
+  const id = cur.id || ('r' + Date.now().toString(36));
+  const rec = { id, fields: Object.assign({}, cur.fields), files: Object.assign({}, cur.files), ocr: Object.assign({}, cur.ocr), at: Date.now() };
+  await dbPut(rec);
+  cur = { fields: {}, files: {}, ocr: {} };
+  renderSlots(); renderFields();
+  await loadList();
+  toast('তালিকায় যোগ হয়েছে — মোট ' + recs.length + ' জন');
+  show('list');
 }
 
-function view(k) {
-  if (!thumbs[k]) return;
-  $('lb').innerHTML = '<button id="lbx">✕ বন্ধ</button><br><img src="' + thumbs[k] + '">';
+async function loadList() {
+  const all = await dbAll();
+  all.sort((a, b) => a.at - b.at);
+  recs = all;
+  renderList();
+  $('cnt').textContent = recs.length;
+}
+
+async function editRec(id) {
+  const r = await dbGet(id);
+  if (!r) return;
+  cur = { id: r.id, fields: Object.assign({}, r.fields), files: Object.assign({}, r.files), ocr: Object.assign({}, r.ocr || {}) };
+  renderSlots(); renderFields();
+  show('scan');
+}
+
+async function delRec(id) {
+  if (!confirm('এই ছাত্রের তথ্য মুছে ফেলা হবে?')) return;
+  await dbDel(id);
+  await loadList();
+}
+
+function csv() {
+  const cols = NK.FIELDS.map((f) => f.k);
+  const q = (v) => '"' + String(v == null ? '' : v).replace(/"/g, '""') + '"';
+  const lines = [cols.map(q).join(',')];
+  recs.forEach((r) => lines.push(cols.map((c) => q(r.fields[c])).join(',')));
+  const blob = new Blob(['\ufeff' + lines.join('\n')], { type: 'text/csv;charset=utf-8' });
+  const a = document.createElement('a');
+  a.href = URL.createObjectURL(blob);
+  a.download = 'notun-kuri-talika.csv';
+  a.click();
+  toast(recs.length + ' জনের CSV নামানো হয়েছে');
+}
+
+/* ---------------- কম্পিউটারের সাথে ---------------- */
+function connStatus(txt, ok) {
+  $('conn').innerHTML = ok ? 'কম্পিউটারে <b>যুক্ত</b>' : '<span class="off">' + esc(txt) + '</span>';
+}
+
+function connect(id) {
+  id = (id || '').trim();
+  if (!id) { connStatus('কোড নেই — এক্সটেনশনের QR স্ক্যান করুন', false); return; }
+  if (peer) { try { peer.destroy(); } catch (e) {} }
+  connStatus('যুক্ত হচ্ছে…', false);
+  peer = new Peer({ debug: 0 });
+  peer.on('open', () => {
+    conn = peer.connect(id, { reliable: true });
+    conn.on('open', () => connStatus('', true));
+    conn.on('data', async (msg) => {
+      if (msg && msg.type === 'NEED') {
+        const r = await dbGet(msg.id);
+        if (!r) return;
+        conn.send({ type: 'FILES', id: r.id, name: r.fields['খেলোয়াড়ের নাম (বাংলা)'] || '', files: r.files });
+      }
+    });
+    conn.on('close', () => connStatus('সংযোগ কেটে গেছে', false));
+    conn.on('error', (e) => connStatus('সমস্যা: ' + e.type, false));
+  });
+  peer.on('error', (e) => connStatus('যুক্ত হয়নি (' + e.type + ')', false));
+}
+
+function sendList() {
+  if (!conn || !conn.open) { toast('আগে কম্পিউটারে যুক্ত হন (QR স্ক্যান করুন)'); return; }
+  if (!recs.length) { toast('তালিকা খালি'); return; }
+  const rows = recs.map((r) => Object.assign({ __id: r.id, __done: false }, r.fields));
+  conn.send({ type: 'LIST', rows });
+  toast(rows.length + ' জনের তালিকা পাঠানো হয়েছে। কম্পিউটারে একজন একজন করে ফরম পূরণ করুন — ছবি নিজেই যাবে।');
+}
+
+/* ---------------- দেখানো ---------------- */
+let toastT = null;
+function toast(t) {
+  $('toast').textContent = t;
+  $('toast').style.display = 'block';
+  clearTimeout(toastT);
+  toastT = setTimeout(() => { $('toast').style.display = 'none'; }, 6000);
+}
+
+function show(tab) {
+  ['scan', 'list', 'set'].forEach((t) => {
+    $('t_' + t).classList.toggle('on', t === tab);
+    $('p_' + t).style.display = t === tab ? 'block' : 'none';
+  });
+}
+
+function lightbox(items) {
+  const list = items.filter((i) => i.src);
+  if (!list.length) return;
+  $('lb').innerHTML = '<button id="lbx">✕ বন্ধ</button>' +
+    list.map((i) => '<div class="cap">' + esc(i.cap) + '</div><img src="' + i.src + '">').join('');
   $('lb').style.display = 'block';
   $('lbx').onclick = () => { $('lb').style.display = 'none'; };
 }
 
-function connect() {
-  const id = location.hash.replace('#', '').trim();
-  if (!id) { status('কোড নেই — এক্সটেনশনের QR স্ক্যান করুন', false); return; }
-  const peer = new Peer({ debug: 0 });
-  peer.on('open', () => {
-    conn = peer.connect(id, { reliable: true });
-    conn.on('open', () => status('', true));
-    conn.on('close', () => status('সংযোগ কেটে গেছে — পেজ রিফ্রেশ করুন', false));
-    conn.on('error', (e) => status('সমস্যা: ' + e.type, false));
-  });
-  peer.on('error', (e) => status('যুক্ত হয়নি (' + e.type + ') — QR আবার স্ক্যান করুন', false));
+function renderSlots() {
+  $('slots').innerHTML = Object.keys(SLOTS).map((k) => {
+    const d = cur.files[k];
+    return '<div class="slot">' +
+      (d ? '<img src="' + d + '" data-view="' + k + '">' : '<div class="ph"></div>') +
+      '<div class="m"><b>' + esc(SLOTS[k]) + '</b><span>' + (d ? kb(d) + ' KB' : 'বাকি') + '</span></div>' +
+      '<button data-cap="' + k + '">' + (d ? 'আবার' : 'তুলুন') + '</button></div>';
+  }).join('');
 }
 
+function renderFields() {
+  const keys = NK.FIELDS.map((f) => f.k);
+  if (!Object.keys(cur.fields).length) { $('fields').innerHTML = '<div class="hint">কাগজ পড়ার পর ঘরগুলো এখানে আসবে।</div>'; return; }
+  $('fields').innerHTML = keys.map((k) => {
+    const w = NK.check(k, cur.fields[k]);
+    return '<div class="f' + (w ? ' bad' : '') + '"><label>' + esc(k) + '</label>' +
+      '<input data-f="' + esc(k) + '" value="' + esc(cur.fields[k] || '') + '">' +
+      '<div class="w">' + (w ? esc(w) : '✔') + '</div></div>';
+  }).join('');
+}
+
+function renderList() {
+  if (!recs.length) { $('list').innerHTML = '<div class="hint">এখনও কেউ নেই।</div>'; return; }
+  $('list').innerHTML = recs.map((r, i) => {
+    const bad = NK.FIELDS.filter((f) => NK.check(f.k, r.fields[f.k])).length;
+    const imgs = Object.keys(r.files || {}).length;
+    return '<div class="rec"><div class="n">' + (i + 1) + '. ' + esc(r.fields['খেলোয়াড়ের নাম (বাংলা)'] || '(নাম নেই)') + '</div>' +
+      '<div class="s">শ্রেণি ' + esc(r.fields['শ্রেণি'] || '-') + ' • রোল ' + esc(r.fields['রোল নম্বর'] || '-') +
+      ' • ছবি ' + imgs + '/6 • ' + (bad ? '<span class="off">' + bad + ' টি ঘর দেখুন</span>' : 'ঠিক আছে') + '</div>' +
+      '<div class="b"><button data-ed="' + r.id + '">তথ্য</button><button data-img="' + r.id + '">ছবি</button>' +
+      '<button data-del="' + r.id + '">মুছুন</button></div></div>';
+  }).join('');
+}
+
+function renderConsts() {
+  const c = LS.get('consts', {});
+  const pin = ['শিক্ষা প্রতিষ্ঠানের নাম', 'লিঙ্গ', 'মোবাইল নম্বর', 'বিভাগ', 'জেলা',
+    'উপজেলা / সিটি কর্পোরেশন / পৌরসভা', 'ইউনিয়ন / ওয়ার্ড', 'ইভেন্ট - ১', 'শ্রেণি'];
+  $('consts').innerHTML = pin.map((k) =>
+    '<div class="f"><label>' + esc(k) + '</label><input data-k="' + esc(k) + '" value="' + esc(c[k] || '') + '"></div>').join('');
+}
+
+function showProvider(reset) {
+  const p = NKOCR.PROVIDERS[$('provider').value];
+  $('models').innerHTML = p.models.map((m) => '<option value="' + m + '"></option>').join('');
+  if (reset || !LS.get('model', '')) $('model').value = p.models[0] || '';
+  else $('model').value = LS.get('model', '');
+  $('keyHint').textContent = p.keyHint;
+  const noKey = !!p.noKey;
+  $('keys').style.display = noKey ? 'none' : '';
+  const custom = $('provider').value === 'custom';
+  $('baseUrl').style.display = custom ? '' : 'none';
+  $('baseLbl').style.display = custom ? '' : 'none';
+}
+
+/* ---------------- ইভেন্ট ---------------- */
 document.addEventListener('click', (e) => {
   if (e.target.id === 'lb') { $('lb').style.display = 'none'; return; }
-  const c = e.target.closest('[data-cap]');
-  if (c) return openCamera(c.getAttribute('data-cap'));
-  const v = e.target.closest('[data-view]');
-  if (v) return view(v.getAttribute('data-view'));
+  const vw = e.target.closest('[data-view]');
+  if (vw) {
+    const k = vw.getAttribute('data-view');
+    return lightbox([
+      { cap: SLOTS[k] + ' — যেটি ফরমে আপলোড হবে', src: cur.files[k] },
+      { cap: 'পড়ার জন্য ধূসর কপি', src: cur.ocr[k] }
+    ]);
+  }
+  const im = e.target.closest('[data-img]');
+  if (im) {
+    const r = recs.find((x) => x.id === im.getAttribute('data-img'));
+    if (r) return lightbox(Object.keys(SLOTS).map((k) => ({ cap: SLOTS[k], src: (r.files || {})[k] })));
+  }
+  const cap = e.target.closest('[data-cap]');
+  if (cap) return takePhoto(cap.getAttribute('data-cap'));
+  const ed = e.target.closest('[data-ed]');
+  if (ed) return editRec(ed.getAttribute('data-ed'));
+  const dl = e.target.closest('[data-del]');
+  if (dl) return delRec(dl.getAttribute('data-del'));
 });
 
-$('pvok').addEventListener('click', accept);
-$('pvno').addEventListener('click', reject);
-
-$('auto').checked = localStorage.getItem('nk_autocrop') === '1';
-$('auto').addEventListener('change', () => {
-  localStorage.setItem('nk_autocrop', $('auto').checked ? '1' : '0');
-  say($('auto').checked
-    ? 'অটো-কাটা চালু। ভুল জায়গা কাটলে ✘ দিয়ে বাতিল করে টিক তুলে দিন।'
-    : 'অটো-কাটা বন্ধ। ছবি যেমন তুলবেন ঠিক তেমনই যাবে।');
+$('fields').addEventListener('input', (e) => {
+  const inp = e.target.closest('[data-f]');
+  if (!inp) return;
+  const k = inp.getAttribute('data-f');
+  cur.fields[k] = inp.value;
+  const box = inp.closest('.f');
+  const w = NK.check(k, inp.value);
+  box.classList.toggle('bad', !!w);
+  box.querySelector('.w').textContent = w || '✔';
 });
 
-render();
-connect();
+$('t_scan').onclick = () => show('scan');
+$('t_list').onclick = () => show('list');
+$('t_set').onclick = () => show('set');
+$('read').onclick = readDocs;
+$('save').onclick = saveRec;
+$('sendOne').onclick = () => {
+  if (!conn || !conn.open) { toast('আগে কম্পিউটারে যুক্ত হন (QR স্ক্যান করুন)'); return; }
+  if (!Object.keys(cur.fields).length) { toast('আগে কাগজ পড়ুন'); return; }
+  conn.send({ type: 'RECORD', fields: cur.fields, files: cur.files });
+  toast('তথ্য ও ছবি কম্পিউটারে পাঠানো হয়েছে — ওখানে “ফরমে বসাও” চাপুন।');
+};
+$('csv').onclick = csv;
+$('sendList').onclick = sendList;
+$('newRec').onclick = () => { cur = { fields: {}, files: {}, ocr: {} }; renderSlots(); renderFields(); show('scan'); toast('নতুন ছাত্র — কাগজ তুলুন'); };
+
+$('saveSet').onclick = () => {
+  LS.set('provider', $('provider').value);
+  LS.set('keys', $('keys').value.trim());
+  LS.set('model', $('model').value.trim());
+  LS.set('baseUrl', $('baseUrl').value.trim());
+  LS.set('mode', $('mode').value);
+  LS.set('bw', $('bw').checked);
+  const c = {};
+  document.querySelectorAll('[data-k]').forEach((i) => { if (i.value.trim()) c[i.getAttribute('data-k')] = i.value.trim(); });
+  LS.set('consts', c);
+  toast('সেটিং সংরক্ষণ হয়েছে');
+};
+$('doConnect').onclick = () => connect($('code').value);
+$('wipe').onclick = async () => {
+  if (!confirm('তালিকার সব ছাত্র মুছে ফেলা হবে। নিশ্চিত?')) return;
+  for (const r of recs) await dbDel(r.id);
+  await loadList();
+  toast('সব মুছে ফেলা হয়েছে');
+};
+
+/* ---------------- শুরু ---------------- */
+(async () => {
+  $('provider').innerHTML = Object.keys(NKOCR.PROVIDERS)
+    .map((k) => '<option value="' + k + '">' + NKOCR.PROVIDERS[k].name + '</option>').join('');
+  $('provider').value = LS.get('provider', 'gemini');
+  $('provider').addEventListener('change', () => showProvider(true));
+  $('keys').value = LS.get('keys', '');
+  $('baseUrl').value = LS.get('baseUrl', '');
+  showProvider(false);
+  $('mode').value = LS.get('mode', 'list');
+  $('bw').checked = LS.get('bw', true);
+  renderConsts();
+  renderSlots();
+  renderFields();
+  await openDB();
+  await loadList();
+  const id = location.hash.replace('#', '').trim();
+  if (id) { $('code').value = id; connect(id); }
+  else connStatus('কোড নেই — এক্সটেনশনের QR স্ক্যান করুন', false);
+  const p0 = NKOCR.PROVIDERS[LS.get('provider', 'gemini')] || {};
+  if (!p0.noKey && !LS.get('keys', '')) { show('set'); toast('প্রথমে সেটিং-এ API key বসান'); }
+})();
 </script>
 </body>
 </html>
