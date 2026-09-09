@@ -39,6 +39,8 @@
     <button data-slot="__birth">জন্ম নিবন্ধন</button>
     <button data-slot="__nid">অভিভাবকের এনআইডি</button>
     <button data-slot="__certificate">প্রত্যয়নপত্র</button>
+    <button data-slot="__extra1">ভর্তি রেজি. / ফলাফল</button>
+    <button data-slot="__extra2">আইডি / প্রত্যয়নের কপি</button>
   </div>
 
   <button class="shoot" id="shoot">ছবি তুলে কম্পিউটারে পাঠাও</button>
@@ -48,7 +50,7 @@
 
 <script src="https://unpkg.com/peerjs@1.5.4/dist/peerjs.min.js"></script>
 <script>
-const LABEL = { __photo:'ছাত্রের ছবি', __birth:'জন্ম নিবন্ধন', __nid:'এনআইডি', __certificate:'প্রত্যয়নপত্র' };
+const LABEL = { __photo:'ছাত্রের ছবি', __birth:'জন্ম নিবন্ধন', __nid:'এনআইডি', __certificate:'প্রত্যয়নপত্র', __extra1:'ভর্তি রেজি./ফলাফল', __extra2:'আইডি/প্রত্যয়নের কপি' };
 let slot='__photo', conn=null, sentMap={}, stream=null;
 const $=(id)=>document.getElementById(id);
 const say=(t)=>{ $('msg').textContent=t; };
