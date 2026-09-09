@@ -1,0 +1,128 @@
+<!DOCTYPE html>
+<html lang="bn">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>নতুন কুঁড়ি — মোবাইল ক্যামেরা</title>
+<style>
+  *{box-sizing:border-box;margin:0;padding:0;font-family:'Noto Sans Bengali','Hind Siliguri',system-ui,sans-serif;-webkit-tap-highlight-color:transparent}
+  body{background:#0a1c16;color:#e8f1ec;padding:12px;line-height:1.55}
+  h1{font-size:16px;font-weight:600}
+  .st{font-size:12.5px;color:#8fb5a4;margin-bottom:10px}
+  .st b{color:#4fd39a}
+  .st .off{color:#e0917a}
+  .vid{position:relative;background:#000;border-radius:10px;overflow:hidden;aspect-ratio:3/4;max-height:52vh}
+  video{width:100%;height:100%;object-fit:cover;display:block}
+  #guide{position:absolute;inset:0;display:none;pointer-events:none}
+  #guide .b{position:absolute;top:5%;bottom:5%;left:50%;transform:translateX(-50%);aspect-ratio:3/4;border:2px dashed #f59e0b;border-radius:6px;box-shadow:0 0 0 9999px rgba(0,0,0,.35)}
+  .tabs{display:grid;grid-template-columns:1fr 1fr;gap:7px;margin:10px 0}
+  button{font-size:14px;padding:12px;border-radius:9px;border:1px solid #2c5b49;background:#1c4033;color:#e8f1ec;cursor:pointer;width:100%}
+  .on{background:#f59e0b;border-color:#f59e0b;color:#3a2400;font-weight:600}
+  .shoot{background:#2f9e6f;border-color:#2f9e6f;color:#06231a;font-weight:600;font-size:16px;padding:15px}
+  .sent{margin-top:10px;display:grid;grid-template-columns:1fr 1fr;gap:6px;font-size:12px}
+  .sent div{background:#10261f;border:1px solid #22493a;border-radius:7px;padding:6px 8px}
+  .sent .y{border-color:#2f9e6f;color:#9fe3c4}
+  .msg{margin-top:10px;background:#10261f;border-left:3px solid #f59e0b;border-radius:7px;padding:8px 10px;font-size:12.5px}
+</style>
+</head>
+<body>
+  <h1>মোবাইল ক্যামেরা</h1>
+  <div class="st" id="st">যুক্ত হচ্ছে…</div>
+
+  <div class="vid">
+    <video id="v" autoplay playsinline muted></video>
+    <div id="guide"><div class="b"></div></div>
+  </div>
+
+  <div class="tabs">
+    <button data-slot="__photo" class="on">ছাত্রের ছবি</button>
+    <button data-slot="__birth">জন্ম নিবন্ধন</button>
+    <button data-slot="__nid">অভিভাবকের এনআইডি</button>
+    <button data-slot="__certificate">প্রত্যয়নপত্র</button>
+  </div>
+
+  <button class="shoot" id="shoot">ছবি তুলে কম্পিউটারে পাঠাও</button>
+
+  <div class="sent" id="sent"></div>
+  <div class="msg" id="msg">ছবি তুললে সাথে সাথেই কম্পিউটারের এক্সটেনশনে চলে যাবে। ফোন আর কম্পিউটার একই ওয়াই-ফাইতে থাকলে সবচেয়ে ভালো কাজ করে।</div>
+
+<script src="https://unpkg.com/peerjs@1.5.4/dist/peerjs.min.js"></script>
+<script>
+const LABEL = { __photo:'ছাত্রের ছবি', __birth:'জন্ম নিবন্ধন', __nid:'এনআইডি', __certificate:'প্রত্যয়নপত্র' };
+let slot='__photo', conn=null, sentMap={}, stream=null;
+const $=(id)=>document.getElementById(id);
+const say=(t)=>{ $('msg').textContent=t; };
+
+function status(t, ok){ $('st').innerHTML = ok ? 'কম্পিউটারের সাথে <b>যুক্ত আছে</b>' : '<span class="off">'+t+'</span>'; }
+
+function renderSent(){
+  $('sent').innerHTML = Object.keys(LABEL).map(k =>
+    '<div class="'+(sentMap[k]?'y':'')+'">'+LABEL[k]+': '+(sentMap[k]?'পাঠানো ✔':'বাকি')+'</div>').join('');
+}
+
+async function startCam(){
+  try{
+    if (stream) stream.getTracks().forEach(t=>t.stop());
+    stream = await navigator.mediaDevices.getUserMedia({
+      video:{ facingMode:{ ideal:'environment' }, width:{ ideal:1920 }, height:{ ideal:1920 } }, audio:false });
+    $('v').srcObject = stream;
+  }catch(e){ say('ক্যামেরা চালু হয়নি: '+e.message+'। ব্রাউজারে ক্যামেরার অনুমতি দিন।'); }
+}
+
+function connect(){
+  const id = location.hash.replace('#','').trim();
+  if(!id){ status('কম্পিউটারের কোড পাওয়া যায়নি — এক্সটেনশনের QR কোডটি আবার স্ক্যান করুন', false); return; }
+  const peer = new Peer({ debug:0 });
+  peer.on('open', ()=>{
+    conn = peer.connect(id, { reliable:true });
+    conn.on('open', ()=>status('', true));
+    conn.on('close', ()=>status('সংযোগ কেটে গেছে — পেজটি রিফ্রেশ করুন', false));
+    conn.on('error', (e)=>status('সংযোগে সমস্যা: '+e.type, false));
+  });
+  peer.on('error', (e)=>status('সংযোগ হচ্ছে না ('+e.type+') — QR আবার স্ক্যান করুন', false));
+}
+
+function compress(canvas){
+  let q=0.85, d=canvas.toDataURL('image/jpeg', q);
+  while(d.length*0.75 > 900*1024 && q>0.35){ q-=0.12; d=canvas.toDataURL('image/jpeg', q); }
+  return d;
+}
+
+function shoot(){
+  const v=$('v');
+  if(!v.videoWidth){ say('ক্যামেরা এখনও তৈরি নয়, একটু পরে চাপুন।'); return; }
+  if(!conn || !conn.open){ say('কম্পিউটারের সাথে যুক্ত নয়। QR কোডটি আবার স্ক্যান করুন।'); return; }
+  const sw=v.videoWidth, sh=v.videoHeight;
+  let crop={x:0,y:0,w:sw,h:sh}, out;
+  if(slot==='__photo'){
+    const r=3/4; let cw=sh*r, ch=sh;
+    if(cw>sw){ cw=sw; ch=sw/r; }
+    crop={x:(sw-cw)/2,y:(sh-ch)/2,w:cw,h:ch}; out=[600,800];
+  }else{
+    const long=Math.max(sw,sh), k= long>1800 ? 1800/long : 1;
+    out=[Math.round(sw*k), Math.round(sh*k)];
+  }
+  const c=document.createElement('canvas'); c.width=out[0]; c.height=out[1];
+  const ctx=c.getContext('2d'); ctx.fillStyle='#fff'; ctx.fillRect(0,0,out[0],out[1]);
+  ctx.drawImage(v, crop.x, crop.y, crop.w, crop.h, 0, 0, out[0], out[1]);
+  const data=compress(c);
+  conn.send({ slot, dataURL:data });
+  sentMap[slot]=true; renderSent();
+  say(LABEL[slot]+' পাঠানো হয়েছে ('+Math.round(data.length*0.75/1024)+' কিলোবাইট)।');
+}
+
+document.querySelectorAll('[data-slot]').forEach(b=>b.addEventListener('click',()=>{
+  slot=b.getAttribute('data-slot');
+  document.querySelectorAll('[data-slot]').forEach(x=>x.classList.toggle('on', x===b));
+  $('guide').style.display = slot==='__photo' ? 'block' : 'none';
+  say(slot==='__photo' ? 'ছাত্রকে হলুদ ঘরের ভেতরে রাখুন।' : 'কাগজটি সমান জায়গায় রেখে সোজা উপর থেকে ধরুন, লেখা যেন স্পষ্ট হয়।');
+}));
+$('shoot').addEventListener('click', shoot);
+
+renderSent();
+$('guide').style.display='block';
+startCam();
+connect();
+</script>
+</body>
+</html>
