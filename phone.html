@@ -26,6 +26,12 @@
   .sent .y{border-color:#2f9e6f;color:#9fe3c4}
   .bwrow{display:flex;gap:8px;align-items:center;margin-top:9px;font-size:12.5px;color:#a9cdbd}
   .bwrow input{width:auto}
+  .sent .cell{padding:0;overflow:hidden;position:relative}
+  .sent .cell img{width:100%;height:74px;object-fit:cover;display:block;background:#06120e;cursor:zoom-in}
+  .sent .cell .cap{padding:4px 6px;font-size:11px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+  #lb{display:none;position:fixed;inset:0;background:rgba(3,10,8,.95);z-index:99;padding:12px;overflow:auto;text-align:center}
+  #lb img{max-width:100%;background:#fff;border-radius:6px}
+  #lb button{width:auto;padding:9px 16px;margin-bottom:10px}
   #msg{margin-top:9px;background:#10261f;border-left:3px solid #f59e0b;border-radius:7px;padding:8px 10px;font-size:12.5px}
 </style>
 </head>
@@ -51,7 +57,8 @@
   <label class="bwrow"><input type="checkbox" id="bw" checked> কাগজ সাদা-কালো (কিনারা কেটে সোজা করে)</label>
 
   <div class="sent" id="sent"></div>
-  <div id="msg">যে কাগজ তুলছেন সেটি উপরে বেছে নিন, তারপর ছবি তুলুন। ছবি সাথে সাথেই কম্পিউটারে চলে যাবে।</div>
+  <div id="lb"></div>
+  <div id="msg">যে কাগজ তুলছেন সেটি উপরে বেছে নিন, তারপর ছবি তুলুন। ছবি সাথে সাথেই কম্পিউটারে চলে যাবে। নিচের ছোট ছবিতে চাপ দিলে বড় করে দেখা যাবে — ঝাপসা হলে আবার তুলুন।</div>
 
 <script src="https://unpkg.com/peerjs@1.5.4/dist/peerjs.min.js"></script>
 <script>/* কাগজের কিনারা খুঁজে বাইরের অংশ বাদ দিয়ে পেজ সোজা করে সাদা-কালো করার অংশ */
@@ -370,6 +377,7 @@ const LABEL = {
   __certificate: 'প্রত্যয়নপত্র', __extra1: 'ভর্তি রেজি./ফলাফল', __extra2: 'আইডি/প্রত্যয়নের কপি'
 };
 let slot = '__photo', conn = null, stream = null, sent = {}, busy = false;
+const thumbs = {};
 const $ = (id) => document.getElementById(id);
 const say = (t) => { $('msg').textContent = t; };
 const kb = (d) => Math.round((d.length * 0.75) / 1024);
@@ -379,9 +387,26 @@ function status(t, ok) {
 }
 
 function renderSent() {
-  $('sent').innerHTML = Object.keys(LABEL).map((k) =>
-    '<div class="' + (sent[k] ? 'y' : '') + '">' + LABEL[k] + (sent[k] ? ' ✔' : '') + '</div>').join('');
+  $('sent').innerHTML = Object.keys(LABEL).map((k) => {
+    const d = thumbs[k];
+    return '<div class="cell ' + (sent[k] ? 'y' : '') + '">' +
+      (d ? '<img src="' + d + '" data-view="' + k + '">' : '') +
+      '<div class="cap">' + LABEL[k] + (sent[k] ? ' ✔' : '') + '</div></div>';
+  }).join('');
 }
+
+function view(k) {
+  if (!thumbs[k]) return;
+  $('lb').innerHTML = '<button id="lbx">✕ বন্ধ</button><br><img src="' + thumbs[k] + '">';
+  $('lb').style.display = 'block';
+  $('lbx').onclick = () => { $('lb').style.display = 'none'; };
+}
+
+document.addEventListener('click', (e) => {
+  const v = e.target.closest('[data-view]');
+  if (v) return view(v.getAttribute('data-view'));
+  if (e.target.id === 'lb') $('lb').style.display = 'none';
+});
 
 async function startCam() {
   try {
@@ -423,6 +448,7 @@ function shoot() {
         : NKFX.doc(v, { bw: $('bw').checked });
       conn.send({ slot, dataURL: r.out, ocr: r.ocr || null });
       sent[slot] = true;
+      thumbs[slot] = r.out;
       renderSent();
       say(LABEL[slot] + ' পাঠানো হয়েছে (' + kb(r.out) + ' KB)' +
         (slot === '__photo' ? '' : (r.cropped ? ' — কিনারা কেটে সোজা করা হয়েছে।'
