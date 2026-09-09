@@ -24,7 +24,9 @@
   .card .row button{width:auto;padding:5px 9px;font-size:11.5px}
   .card.done .row .t i{color:#4fd39a}
   button{font-size:13.5px;padding:10px;border-radius:9px;border:1px solid #2c5b49;background:#1c4033;color:#e8f1ec;cursor:pointer;width:100%}
-  #msg{margin-top:11px;background:#10261f;border-left:3px solid #f59e0b;border-radius:7px;padding:9px 11px;font-size:12.5px}
+  .opt{display:flex;gap:9px;align-items:center;margin-top:11px;font-size:12.5px;color:#a9cdbd;background:#10261f;border:1px solid #22493a;border-radius:9px;padding:10px}
+  .opt input{width:auto}
+  #msg{margin-top:9px;background:#10261f;border-left:3px solid #f59e0b;border-radius:7px;padding:9px 11px;font-size:12.5px}
   #pv{display:none;position:fixed;inset:0;background:rgba(3,10,8,.97);z-index:100;padding:10px;flex-direction:column}
   #pv .cap{text-align:center;font-size:12.5px;color:#a9cdbd;padding:6px 0}
   #pv .box{flex:1;min-height:0;display:flex;align-items:center;justify-content:center;overflow:auto}
@@ -42,6 +44,7 @@
 
   <div class="grid" id="grid"></div>
 
+  <label class="opt"><input type="checkbox" id="auto"> কাগজের কিনারা নিজে থেকে কেটে সোজা করবে</label>
   <div id="msg">যে কাগজের ঘরে চাপ দেবেন, ফোনের ক্যামেরা খুলবে। ছবি তোলার পর দেখে ✔ দিলে কম্পিউটারে যাবে, ✘ দিলে বাদ।</div>
 
   <div id="lb"></div>
@@ -156,7 +159,7 @@ function quadOk(quad, w, h) {
   if (!quad) return false;
   const sides = [dist(quad[0], quad[1]), dist(quad[1], quad[2]), dist(quad[2], quad[3]), dist(quad[3], quad[0])];
   const small = Math.min(w, h);
-  if (Math.min.apply(null, sides) < small * 0.15) return false;
+  if (Math.min.apply(null, sides) < small * 0.45) return false;
   // ক্ষেত্রফল (shoelace)
   let ar = 0;
   for (let i = 0; i < 4; i++) {
@@ -165,7 +168,7 @@ function quadOk(quad, w, h) {
   }
   ar = Math.abs(ar) / 2;
   const frac = ar / (w * h);
-  return frac > 0.12 && frac < 0.985;
+  return frac > 0.4 && frac < 0.97;
 }
 
 /* dst আয়তক্ষেত্র → src চতুর্ভুজ, ৮টি অজানা */
@@ -310,6 +313,12 @@ function pack(canvas, cap, forceJPEG) {
 }
 
 window.NKFX = {
+  /* কোনো কাটাকুটি নয় — শুধু মাপ ছোট করে রঙিন রাখা */
+  plain(img) {
+    const c = scaled(img, 1700);
+    return { out: pack(c, 1500 * 1024, true), ocr: null, cropped: false };
+  },
+
   /* ছাত্রের ছবি — রঙিন, ৩:৪ */
   photo(img) {
     const sw = img.naturalWidth || img.videoWidth, sh = img.naturalHeight || img.videoHeight;
@@ -415,13 +424,15 @@ function openCamera(slot) {
       const img = new Image();
       img.onload = () => setTimeout(() => {
         try {
+          const auto = $('auto').checked;
           const r = (slot === '__photo')
             ? NKFX.photo(img)
-            : NKFX.doc(img, { color: true });
+            : (auto ? NKFX.doc(img, { color: true }) : NKFX.plain(img));
           pending = { slot: slot, out: r.out };
           $('pvimg').src = r.out;
           $('pvcap').textContent = LABEL[slot] + ' • ' + kb(r.out) + ' KB' +
-            (slot === '__photo' ? '' : (r.cropped ? ' • কিনারা কেটে সোজা করা হয়েছে' : ' • কিনারা পাওয়া যায়নি, পুরো ছবি'));
+            (slot === '__photo' ? '' : (r.cropped ? ' • কিনারা কেটে সোজা করা হয়েছে'
+              : ($('auto').checked ? ' • কিনারা মেলেনি, যেমন তুলেছেন তেমনই' : ' • যেমন তুলেছেন তেমনই')));
           $('pv').style.display = 'flex';
           say('দেখে নিন — ঠিক থাকলে ✔ দিন।');
         } catch (e) {
@@ -485,6 +496,14 @@ document.addEventListener('click', (e) => {
 
 $('pvok').addEventListener('click', accept);
 $('pvno').addEventListener('click', reject);
+
+$('auto').checked = localStorage.getItem('nk_autocrop') === '1';
+$('auto').addEventListener('change', () => {
+  localStorage.setItem('nk_autocrop', $('auto').checked ? '1' : '0');
+  say($('auto').checked
+    ? 'অটো-কাটা চালু। ভুল জায়গা কাটলে ✘ দিয়ে বাতিল করে টিক তুলে দিন।'
+    : 'অটো-কাটা বন্ধ। ছবি যেমন তুলবেন ঠিক তেমনই যাবে।');
+});
 
 render();
 connect();
