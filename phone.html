@@ -2,129 +2,1094 @@
 <html lang="bn">
 <head>
 <meta charset="utf-8">
-<meta name="viewport" content="width=device-width, initial-scale=1">
-<title>নতুন কুঁড়ি — মোবাইল ক্যামেরা</title>
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="theme-color" content="#0a1c16">
+<title>নতুন কুঁড়ি — মোবাইল স্ক্যান</title>
 <style>
   *{box-sizing:border-box;margin:0;padding:0;font-family:'Noto Sans Bengali','Hind Siliguri',system-ui,sans-serif;-webkit-tap-highlight-color:transparent}
-  body{background:#0a1c16;color:#e8f1ec;padding:12px;line-height:1.55}
+  body{background:#0a1c16;color:#e8f1ec;line-height:1.55;padding:10px 10px 90px}
   h1{font-size:16px;font-weight:600}
-  .st{font-size:12.5px;color:#8fb5a4;margin-bottom:10px}
-  .st b{color:#4fd39a}
-  .st .off{color:#e0917a}
-  .vid{position:relative;background:#000;border-radius:10px;overflow:hidden;aspect-ratio:3/4;max-height:52vh}
-  video{width:100%;height:100%;object-fit:cover;display:block}
-  #guide{position:absolute;inset:0;display:none;pointer-events:none}
-  #guide .b{position:absolute;top:5%;bottom:5%;left:50%;transform:translateX(-50%);aspect-ratio:3/4;border:2px dashed #f59e0b;border-radius:6px;box-shadow:0 0 0 9999px rgba(0,0,0,.35)}
-  .tabs{display:grid;grid-template-columns:1fr 1fr;gap:7px;margin:10px 0}
-  button{font-size:14px;padding:12px;border-radius:9px;border:1px solid #2c5b49;background:#1c4033;color:#e8f1ec;cursor:pointer;width:100%}
-  .on{background:#f59e0b;border-color:#f59e0b;color:#3a2400;font-weight:600}
-  .shoot{background:#2f9e6f;border-color:#2f9e6f;color:#06231a;font-weight:600;font-size:16px;padding:15px}
-  .sent{margin-top:10px;display:grid;grid-template-columns:1fr 1fr;gap:6px;font-size:12px}
-  .sent div{background:#10261f;border:1px solid #22493a;border-radius:7px;padding:6px 8px}
-  .sent .y{border-color:#2f9e6f;color:#9fe3c4}
-  .msg{margin-top:10px;background:#10261f;border-left:3px solid #f59e0b;border-radius:7px;padding:8px 10px;font-size:12.5px}
+  .top{display:flex;justify-content:space-between;align-items:baseline;gap:8px;margin-bottom:6px}
+  #conn{font-size:12px;color:#8fb5a4}
+  #conn b{color:#4fd39a}
+  .off{color:#e0917a}
+  .tabs{display:grid;grid-template-columns:1fr 1fr 1fr;gap:6px;position:sticky;top:0;background:#0a1c16;padding:6px 0;z-index:5}
+  button{font-size:14px;padding:11px;border-radius:9px;border:1px solid #2c5b49;background:#1c4033;color:#e8f1ec;cursor:pointer;width:100%}
+  .tabs button{padding:9px;font-size:13.5px}
+  .tabs .on{background:#2f9e6f;border-color:#2f9e6f;color:#06231a;font-weight:600}
+  .go{background:#2f9e6f;border-color:#2f9e6f;color:#06231a;font-weight:600}
+  .card{background:#10261f;border:1px solid #22493a;border-radius:10px;padding:10px;margin-top:10px}
+  .slot{display:flex;align-items:center;gap:9px;background:#0a1c16;border:1px solid #22493a;border-radius:9px;padding:7px;margin-bottom:7px}
+  .slot img,.slot .ph{width:46px;height:46px;border-radius:6px;object-fit:cover;background:#06120e;border:1px solid #2c5b49;flex:0 0 auto}
+  .slot .m{flex:1;min-width:0}
+  .slot .m b{display:block;font-size:12.5px;font-weight:600;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+  .slot .m span{font-size:11.5px;color:#8fb5a4}
+  .slot button{width:auto;padding:7px 12px;font-size:12.5px;flex:0 0 auto}
+  .f{margin-bottom:8px}
+  .f label{display:block;font-size:11.5px;color:#8fb5a4}
+  .f input,input,select,textarea{width:100%;font-size:14px;padding:9px;border-radius:8px;border:1px solid #2c5b49;background:#0a1c16;color:#e8f1ec}
+  .f .w{font-size:11.5px;color:#4fd39a;margin-top:2px}
+  .f.bad input{border-color:#c96a4f;background:#25130d}
+  .f.bad .w{color:#f0b48f}
+  .hint{font-size:12.5px;color:#8fb5a4}
+  .rec{background:#0a1c16;border:1px solid #22493a;border-radius:9px;padding:9px;margin-bottom:8px}
+  .rec .n{font-weight:600;font-size:13.5px}
+  .rec .s{font-size:11.5px;color:#8fb5a4}
+  .rec .b{display:flex;gap:6px;margin-top:7px}
+  .rec .b button{padding:7px;font-size:12.5px}
+  .two{display:flex;gap:7px;margin-top:8px}
+  #toast{display:none;position:fixed;left:10px;right:10px;bottom:10px;background:#17372c;border:1px solid #2f9e6f;border-radius:10px;padding:11px 13px;font-size:13px;z-index:20;box-shadow:0 8px 24px rgba(0,0,0,.5)}
+  .lbl{font-size:12px;color:#8fb5a4;margin:8px 0 3px}
 </style>
 </head>
 <body>
-  <h1>মোবাইল ক্যামেরা</h1>
-  <div class="st" id="st">যুক্ত হচ্ছে…</div>
-
-  <div class="vid">
-    <video id="v" autoplay playsinline muted></video>
-    <div id="guide"><div class="b"></div></div>
-  </div>
+  <div class="top"><h1>নতুন কুঁড়ি — স্ক্যান</h1><div id="conn"></div></div>
 
   <div class="tabs">
-    <button data-slot="__photo" class="on">ছাত্রের ছবি</button>
-    <button data-slot="__birth">জন্ম নিবন্ধন</button>
-    <button data-slot="__nid">অভিভাবকের এনআইডি</button>
-    <button data-slot="__certificate">প্রত্যয়নপত্র</button>
-    <button data-slot="__extra1">ভর্তি রেজি. / ফলাফল</button>
-    <button data-slot="__extra2">আইডি / প্রত্যয়নের কপি</button>
+    <button id="t_scan" class="on">স্ক্যান</button>
+    <button id="t_list">তালিকা (<span id="cnt">0</span>)</button>
+    <button id="t_set">সেটিং</button>
   </div>
 
-  <button class="shoot" id="shoot">ছবি তুলে কম্পিউটারে পাঠাও</button>
+  <div id="p_scan">
+    <div class="card">
+      <div id="slots"></div>
+      <button class="go" id="read">কাগজ পড়ো</button>
+    </div>
+    <div class="card">
+      <div id="fields"></div>
+      <div class="two"><button class="go" id="save">তালিকায় রাখো</button><button id="newRec">নতুন ছাত্র</button></div>
+    </div>
+  </div>
 
-  <div class="sent" id="sent"></div>
-  <div class="msg" id="msg">ছবি তুললে সাথে সাথেই কম্পিউটারের এক্সটেনশনে চলে যাবে। ফোন আর কম্পিউটার একই ওয়াই-ফাইতে থাকলে সবচেয়ে ভালো কাজ করে।</div>
+  <div id="p_set" style="display:none">
+    <div class="card">
+      <div class="lbl">Gemini API key (aistudio.google.com — ফ্রি)। একাধিক হলে প্রতি লাইনে একটি।</div>
+      <textarea id="keys" rows="3" placeholder="AIza…"></textarea>
+      <div class="lbl">মডেল</div>
+      <select id="model">
+        <option value="gemini-2.5-flash">gemini-2.5-flash</option>
+        <option value="gemini-2.5-flash-lite">gemini-2.5-flash-lite</option>
+        <option value="gemini-2.0-flash">gemini-2.0-flash</option>
+      </select>
+      <div class="lbl">কাজের ধরন</div>
+      <select id="mode">
+        <option value="list">তালিকায় জমাবো (ক্লাসে ঘুরে স্ক্যান)</option>
+        <option value="live">সরাসরি কম্পিউটারে পাঠাবো</option>
+      </select>
+      <label style="display:flex;gap:8px;align-items:center;margin-top:10px;font-size:13px"><input type="checkbox" id="bw" style="width:auto"> কাগজ সাদা-কালো স্ক্যান (কিনারা কেটে সোজা করে)</label>
+      <div class="lbl">কম্পিউটারের কোড (QR স্ক্যান করলে নিজেই বসে)</div>
+      <input id="code" placeholder="nk……">
+      <div class="two"><button id="doConnect">যুক্ত হও</button><button class="go" id="saveSet">সংরক্ষণ</button></div>
+    </div>
+    <div class="card">
+      <div class="lbl">সব ছাত্রের জন্য একই তথ্য — একবার লিখে রাখুন</div>
+      <div id="consts"></div>
+      <button class="go" id="saveSet2" style="display:none"></button>
+    </div>
+  </div>
+
+  <div id="p_list" style="display:none">
+    <div class="card">
+      <div id="list"></div>
+      <div class="two"><button class="go" id="sendList">কম্পিউটারে পাঠাও</button><button id="csv">CSV নামাও</button></div>
+      <div class="two"><button id="wipe">সব মুছুন</button></div>
+      <div class="hint" style="margin-top:8px">তালিকা ও ছবি এই ফোনেই জমা থাকে। কম্পিউটারে পাঠানোর পর প্রতি ছাত্রের ছবি নিজে থেকেই যাবে — ফোনটি যুক্ত রাখুন।</div>
+    </div>
+  </div>
+
+  <div id="toast"></div>
 
 <script src="https://unpkg.com/peerjs@1.5.4/dist/peerjs.min.js"></script>
-<script>
-const LABEL = { __photo:'ছাত্রের ছবি', __birth:'জন্ম নিবন্ধন', __nid:'এনআইডি', __certificate:'প্রত্যয়নপত্র', __extra1:'ভর্তি রেজি./ফলাফল', __extra2:'আইডি/প্রত্যয়নের কপি' };
-let slot='__photo', conn=null, sentMap={}, stream=null;
-const $=(id)=>document.getElementById(id);
-const say=(t)=>{ $('msg').textContent=t; };
+<script>/* কাগজের কিনারা খুঁজে বাইরের অংশ বাদ দিয়ে পেজ সোজা করে সাদা-কালো করার অংশ */
+(() => {
+if (typeof window !== 'undefined' && window.NKFX) return;
 
-function status(t, ok){ $('st').innerHTML = ok ? 'কম্পিউটারের সাথে <b>যুক্ত আছে</b>' : '<span class="off">'+t+'</span>'; }
+const MAX_OUT = 1500;   // ফলাফলের সর্বোচ্চ লম্বা দিক
+const MAX_SRC = 2200;   // নমুনা নেওয়ার ছবির সর্বোচ্চ দিক
+const AN = 640;         // কিনারা খোঁজার জন্য ছোট কপি
 
-function renderSent(){
-  $('sent').innerHTML = Object.keys(LABEL).map(k =>
-    '<div class="'+(sentMap[k]?'y':'')+'">'+LABEL[k]+': '+(sentMap[k]?'পাঠানো ✔':'বাকি')+'</div>').join('');
+function cv(w, h) {
+  const c = document.createElement('canvas');
+  c.width = w; c.height = h;
+  return c;
 }
 
-async function startCam(){
-  try{
-    if (stream) stream.getTracks().forEach(t=>t.stop());
-    stream = await navigator.mediaDevices.getUserMedia({
-      video:{ facingMode:{ ideal:'environment' }, width:{ ideal:1920 }, height:{ ideal:1920 } }, audio:false });
-    $('v').srcObject = stream;
-  }catch(e){ say('ক্যামেরা চালু হয়নি: '+e.message+'। ব্রাউজারে ক্যামেরার অনুমতি দিন।'); }
+function scaled(img, maxLong) {
+  const sw = img.naturalWidth || img.videoWidth || img.width;
+  const sh = img.naturalHeight || img.videoHeight || img.height;
+  const k = Math.max(sw, sh) > maxLong ? maxLong / Math.max(sw, sh) : 1;
+  const c = cv(Math.round(sw * k), Math.round(sh * k));
+  const x = c.getContext('2d');
+  x.drawImage(img, 0, 0, c.width, c.height);
+  return c;
 }
 
-function connect(){
-  const id = location.hash.replace('#','').trim();
-  if(!id){ status('কম্পিউটারের কোড পাওয়া যায়নি — এক্সটেনশনের QR কোডটি আবার স্ক্যান করুন', false); return; }
-  const peer = new Peer({ debug:0 });
-  peer.on('open', ()=>{
-    conn = peer.connect(id, { reliable:true });
-    conn.on('open', ()=>status('', true));
-    conn.on('close', ()=>status('সংযোগ কেটে গেছে — পেজটি রিফ্রেশ করুন', false));
-    conn.on('error', (e)=>status('সংযোগে সমস্যা: '+e.type, false));
-  });
-  peer.on('error', (e)=>status('সংযোগ হচ্ছে না ('+e.type+') — QR আবার স্ক্যান করুন', false));
-}
-
-function compress(canvas){
-  let q=0.85, d=canvas.toDataURL('image/jpeg', q);
-  while(d.length*0.75 > 900*1024 && q>0.35){ q-=0.12; d=canvas.toDataURL('image/jpeg', q); }
-  return d;
-}
-
-function shoot(){
-  const v=$('v');
-  if(!v.videoWidth){ say('ক্যামেরা এখনও তৈরি নয়, একটু পরে চাপুন।'); return; }
-  if(!conn || !conn.open){ say('কম্পিউটারের সাথে যুক্ত নয়। QR কোডটি আবার স্ক্যান করুন।'); return; }
-  const sw=v.videoWidth, sh=v.videoHeight;
-  let crop={x:0,y:0,w:sw,h:sh}, out;
-  if(slot==='__photo'){
-    const r=3/4; let cw=sh*r, ch=sh;
-    if(cw>sw){ cw=sw; ch=sw/r; }
-    crop={x:(sw-cw)/2,y:(sh-ch)/2,w:cw,h:ch}; out=[600,800];
-  }else{
-    const long=Math.max(sw,sh), k= long>1800 ? 1800/long : 1;
-    out=[Math.round(sw*k), Math.round(sh*k)];
+function grayOf(canvas) {
+  const w = canvas.width, h = canvas.height;
+  const d = canvas.getContext('2d').getImageData(0, 0, w, h).data;
+  const g = new Uint8Array(w * h);
+  for (let i = 0, p = 0; i < d.length; i += 4, p++) {
+    g[p] = (d[i] * 299 + d[i + 1] * 587 + d[i + 2] * 114) / 1000;
   }
-  const c=document.createElement('canvas'); c.width=out[0]; c.height=out[1];
-  const ctx=c.getContext('2d'); ctx.fillStyle='#fff'; ctx.fillRect(0,0,out[0],out[1]);
-  ctx.drawImage(v, crop.x, crop.y, crop.w, crop.h, 0, 0, out[0], out[1]);
-  const data=compress(c);
-  conn.send({ slot, dataURL:data });
-  sentMap[slot]=true; renderSent();
-  say(LABEL[slot]+' পাঠানো হয়েছে ('+Math.round(data.length*0.75/1024)+' কিলোবাইট)।');
+  return g;
 }
 
-document.querySelectorAll('[data-slot]').forEach(b=>b.addEventListener('click',()=>{
-  slot=b.getAttribute('data-slot');
-  document.querySelectorAll('[data-slot]').forEach(x=>x.classList.toggle('on', x===b));
-  $('guide').style.display = slot==='__photo' ? 'block' : 'none';
-  say(slot==='__photo' ? 'ছাত্রকে হলুদ ঘরের ভেতরে রাখুন।' : 'কাগজটি সমান জায়গায় রেখে সোজা উপর থেকে ধরুন, লেখা যেন স্পষ্ট হয়।');
-}));
-$('shoot').addEventListener('click', shoot);
+function otsu(g) {
+  const hist = new Float64Array(256);
+  for (let i = 0; i < g.length; i++) hist[g[i]]++;
+  const total = g.length;
+  let sum = 0;
+  for (let i = 0; i < 256; i++) sum += i * hist[i];
+  let sumB = 0, wB = 0, best = 0, thr = 128;
+  for (let t = 0; t < 256; t++) {
+    wB += hist[t];
+    if (!wB) continue;
+    const wF = total - wB;
+    if (!wF) break;
+    sumB += t * hist[t];
+    const mB = sumB / wB, mF = (sum - sumB) / wF;
+    const v = wB * wF * (mB - mF) * (mB - mF);
+    if (v > best) { best = v; thr = t; }
+  }
+  return thr;
+}
 
-renderSent();
-$('guide').style.display='block';
-startCam();
-connect();
+/* সবচেয়ে বড় উজ্জ্বল অংশ (কাগজ সাধারণত টেবিলের চেয়ে হালকা) */
+function biggestBlob(g, w, h, thr) {
+  const lab = new Int32Array(w * h);
+  const q = new Int32Array(w * h);
+  let cur = 0, bestId = 0, bestArea = 0;
+  for (let s = 0; s < w * h; s++) {
+    if (lab[s] || g[s] <= thr) continue;
+    cur++;
+    let head = 0, tail = 0, area = 0;
+    q[tail++] = s; lab[s] = cur;
+    while (head < tail) {
+      const p = q[head++]; area++;
+      const x = p % w, y = (p - x) / w;
+      if (x > 0 && !lab[p - 1] && g[p - 1] > thr) { lab[p - 1] = cur; q[tail++] = p - 1; }
+      if (x < w - 1 && !lab[p + 1] && g[p + 1] > thr) { lab[p + 1] = cur; q[tail++] = p + 1; }
+      if (y > 0 && !lab[p - w] && g[p - w] > thr) { lab[p - w] = cur; q[tail++] = p - w; }
+      if (y < h - 1 && !lab[p + w] && g[p + w] > thr) { lab[p + w] = cur; q[tail++] = p + w; }
+    }
+    if (area > bestArea) { bestArea = area; bestId = cur; }
+  }
+  return { lab, id: bestId, area: bestArea };
+}
+
+/* অংশটির চার কোনা — ঘোরানো আয়তক্ষেত্রের জন্য এটাই যথেষ্ট */
+function quadOf(lab, id, w, h) {
+  let a = Infinity, b = -Infinity, c = Infinity, d = -Infinity;
+  let tl = null, br = null, tr = null, bl = null;
+  for (let y = 0; y < h; y++) {
+    for (let x = 0; x < w; x++) {
+      if (lab[y * w + x] !== id) continue;
+      const s = x + y, df = x - y;
+      if (s < a) { a = s; tl = [x, y]; }
+      if (s > b) { b = s; br = [x, y]; }
+      if (df > d) { d = df; tr = [x, y]; }
+      if (df < c) { c = df; bl = [x, y]; }
+    }
+  }
+  if (!tl || !tr || !br || !bl) return null;
+  return [tl, tr, br, bl];
+}
+
+const dist = (p, q) => Math.hypot(p[0] - q[0], p[1] - q[1]);
+
+function quadOk(quad, w, h) {
+  if (!quad) return false;
+  const sides = [dist(quad[0], quad[1]), dist(quad[1], quad[2]), dist(quad[2], quad[3]), dist(quad[3], quad[0])];
+  const small = Math.min(w, h);
+  if (Math.min.apply(null, sides) < small * 0.15) return false;
+  // ক্ষেত্রফল (shoelace)
+  let ar = 0;
+  for (let i = 0; i < 4; i++) {
+    const p = quad[i], q = quad[(i + 1) % 4];
+    ar += p[0] * q[1] - q[0] * p[1];
+  }
+  ar = Math.abs(ar) / 2;
+  const frac = ar / (w * h);
+  return frac > 0.12 && frac < 0.985;
+}
+
+/* dst আয়তক্ষেত্র → src চতুর্ভুজ, ৮টি অজানা */
+function homography(dst, src) {
+  const A = [], B = [];
+  for (let i = 0; i < 4; i++) {
+    const [u, v] = dst[i], [x, y] = src[i];
+    A.push([u, v, 1, 0, 0, 0, -u * x, -v * x]); B.push(x);
+    A.push([0, 0, 0, u, v, 1, -u * y, -v * y]); B.push(y);
+  }
+  for (let i = 0; i < 8; i++) {
+    let piv = i;
+    for (let r = i + 1; r < 8; r++) if (Math.abs(A[r][i]) > Math.abs(A[piv][i])) piv = r;
+    if (Math.abs(A[piv][i]) < 1e-9) return null;
+    if (piv !== i) { const t = A[i]; A[i] = A[piv]; A[piv] = t; const tb = B[i]; B[i] = B[piv]; B[piv] = tb; }
+    for (let r = i + 1; r < 8; r++) {
+      const f = A[r][i] / A[i][i];
+      if (!f) continue;
+      for (let c2 = i; c2 < 8; c2++) A[r][c2] -= f * A[i][c2];
+      B[r] -= f * B[i];
+    }
+  }
+  const X = new Array(8).fill(0);
+  for (let i = 7; i >= 0; i--) {
+    let s = B[i];
+    for (let c2 = i + 1; c2 < 8; c2++) s -= A[i][c2] * X[c2];
+    X[i] = s / A[i][i];
+  }
+  return X;
+}
+
+function warp(srcCanvas, quad, outW, outH) {
+  const H = homography([[0, 0], [outW, 0], [outW, outH], [0, outH]], quad);
+  if (!H) return null;
+  const sw = srcCanvas.width, sh = srcCanvas.height;
+  const sdat = srcCanvas.getContext('2d').getImageData(0, 0, sw, sh).data;
+  const out = cv(outW, outH);
+  const octx = out.getContext('2d');
+  const odat = octx.createImageData(outW, outH);
+  const o = odat.data;
+  const [a, b, c, d, e, f, g, hh] = H;
+  for (let v = 0; v < outH; v++) {
+    for (let u = 0; u < outW; u++) {
+      const den = g * u + hh * v + 1;
+      const x = (a * u + b * v + c) / den;
+      const y = (d * u + e * v + f) / den;
+      const i = (v * outW + u) * 4;
+      if (x < 0 || y < 0 || x > sw - 1 || y > sh - 1) { o[i] = o[i + 1] = o[i + 2] = 255; o[i + 3] = 255; continue; }
+      const x0 = x | 0, y0 = y | 0;
+      const x1 = Math.min(x0 + 1, sw - 1), y1 = Math.min(y0 + 1, sh - 1);
+      const fx = x - x0, fy = y - y0;
+      for (let ch = 0; ch < 3; ch++) {
+        const p00 = sdat[(y0 * sw + x0) * 4 + ch], p10 = sdat[(y0 * sw + x1) * 4 + ch];
+        const p01 = sdat[(y1 * sw + x0) * 4 + ch], p11 = sdat[(y1 * sw + x1) * 4 + ch];
+        o[i + ch] = (p00 * (1 - fx) + p10 * fx) * (1 - fy) + (p01 * (1 - fx) + p11 * fx) * fy;
+      }
+      o[i + 3] = 255;
+    }
+  }
+  octx.putImageData(odat, 0, 0);
+  return out;
+}
+
+/* কনট্রাস্ট বাড়ানো ধূসর কপি — পড়ার জন্য ভালো */
+function enhance(canvas) {
+  const w = canvas.width, h = canvas.height;
+  const ctx = canvas.getContext('2d');
+  const id = ctx.getImageData(0, 0, w, h);
+  const d = id.data;
+  const hist = new Float64Array(256);
+  for (let i = 0; i < d.length; i += 4) {
+    const g = (d[i] * 299 + d[i + 1] * 587 + d[i + 2] * 114) / 1000 | 0;
+    hist[g]++;
+  }
+  const total = w * h;
+  let lo = 0, hi = 255, acc = 0;
+  for (let i = 0; i < 256; i++) { acc += hist[i]; if (acc > total * 0.02) { lo = i; break; } }
+  acc = 0;
+  for (let i = 255; i >= 0; i--) { acc += hist[i]; if (acc > total * 0.02) { hi = i; break; } }
+  const span = Math.max(1, hi - lo);
+  const out = cv(w, h);
+  const oid = out.getContext('2d').createImageData(w, h);
+  const o = oid.data;
+  for (let i = 0; i < d.length; i += 4) {
+    let g = (d[i] * 299 + d[i + 1] * 587 + d[i + 2] * 114) / 1000;
+    g = ((g - lo) / span) * 255;
+    g = g < 0 ? 0 : (g > 255 ? 255 : g);
+    o[i] = o[i + 1] = o[i + 2] = g;
+    o[i + 3] = 255;
+  }
+  out.getContext('2d').putImageData(oid, 0, 0);
+  return out;
+}
+
+/* স্থানীয় গড় ধরে সাদা-কালো (Bradley) — ছায়া পড়লেও লেখা থাকে */
+function blackWhite(canvas) {
+  const w = canvas.width, h = canvas.height;
+  const d = canvas.getContext('2d').getImageData(0, 0, w, h).data;
+  const g = new Float64Array(w * h);
+  for (let i = 0, p = 0; i < d.length; i += 4, p++) g[p] = (d[i] * 299 + d[i + 1] * 587 + d[i + 2] * 114) / 1000;
+
+  const S = new Float64Array((w + 1) * (h + 1));
+  for (let y = 1; y <= h; y++) {
+    let rowsum = 0;
+    for (let x = 1; x <= w; x++) {
+      rowsum += g[(y - 1) * w + (x - 1)];
+      S[y * (w + 1) + x] = S[(y - 1) * (w + 1) + x] + rowsum;
+    }
+  }
+  const win = Math.max(15, Math.round(w / 22)) | 1;
+  const r = win >> 1;
+  const out = cv(w, h);
+  const oid = out.getContext('2d').createImageData(w, h);
+  const o = oid.data;
+  for (let y = 0; y < h; y++) {
+    const y1 = Math.max(0, y - r), y2 = Math.min(h - 1, y + r);
+    for (let x = 0; x < w; x++) {
+      const x1 = Math.max(0, x - r), x2 = Math.min(w - 1, x + r);
+      const n = (x2 - x1 + 1) * (y2 - y1 + 1);
+      const sum = S[(y2 + 1) * (w + 1) + (x2 + 1)] - S[y1 * (w + 1) + (x2 + 1)]
+        - S[(y2 + 1) * (w + 1) + x1] + S[y1 * (w + 1) + x1];
+      const mean = sum / n;
+      const v = g[y * w + x] < mean * 0.86 ? 0 : 255;
+      const i = (y * w + x) * 4;
+      o[i] = o[i + 1] = o[i + 2] = v;
+      o[i + 3] = 255;
+    }
+  }
+  out.getContext('2d').putImageData(oid, 0, 0);
+  return out;
+}
+
+function pack(canvas, cap, forceJPEG) {
+  let q = 0.88;
+  let jpg = canvas.toDataURL('image/jpeg', q);
+  if (!forceJPEG) {
+    const png = canvas.toDataURL('image/png');
+    if (png.length < jpg.length && png.length * 0.75 < cap) return png;
+  }
+  while (jpg.length * 0.75 > cap && q > 0.35) { q -= 0.12; jpg = canvas.toDataURL('image/jpeg', q); }
+  return jpg;
+}
+
+window.NKFX = {
+  /* ছাত্রের ছবি — রঙিন, ৩:৪ */
+  photo(img) {
+    const sw = img.naturalWidth || img.videoWidth, sh = img.naturalHeight || img.videoHeight;
+    const ratio = 3 / 4;
+    let cw = sh * ratio, ch = sh;
+    if (cw > sw) { cw = sw; ch = sw / ratio; }
+    const c = cv(600, 800);
+    const x = c.getContext('2d');
+    x.fillStyle = '#fff'; x.fillRect(0, 0, 600, 800);
+    x.drawImage(img, (sw - cw) / 2, (sh - ch) / 2, cw, ch, 0, 0, 600, 800);
+    return { out: pack(c, 700 * 1024, true), ocr: null, cropped: false };
+  },
+
+  /* কাগজ — কিনারা খুঁজে সোজা করে সাদা-কালো */
+  doc(img, opt) {
+    const bw = !opt || opt.bw !== false;
+    const src = scaled(img, MAX_SRC);
+    const small = scaled(img, AN);
+    let straight = null, cropped = false;
+
+    try {
+      const g = grayOf(small);
+      const thr = otsu(g);
+      const blob = biggestBlob(g, small.width, small.height, thr);
+      const quad = blob.id ? quadOf(blob.lab, blob.id, small.width, small.height) : null;
+      if (quadOk(quad, small.width, small.height)) {
+        const k = src.width / small.width;
+        const q = quad.map((p) => [p[0] * k, p[1] * k]);
+        let ow = (dist(q[0], q[1]) + dist(q[3], q[2])) / 2;
+        let oh = (dist(q[0], q[3]) + dist(q[1], q[2])) / 2;
+        const sc = Math.max(ow, oh) > MAX_OUT ? MAX_OUT / Math.max(ow, oh) : 1;
+        ow = Math.max(200, Math.round(ow * sc));
+        oh = Math.max(200, Math.round(oh * sc));
+        straight = warp(src, q, ow, oh);
+        cropped = !!straight;
+      }
+    } catch (e) { straight = null; }
+
+    if (!straight) straight = scaled(img, MAX_OUT);
+
+    const gray = enhance(straight);
+    const finalC = bw ? blackWhite(gray) : gray;
+    return {
+      out: pack(finalC, 1500 * 1024, false),
+      ocr: pack(gray, 900 * 1024, true),
+      cropped
+    };
+  },
+
+  process(img, opt) {
+    return (opt && opt.doc === false) ? window.NKFX.photo(img) : window.NKFX.doc(img, opt);
+  }
+};
+})();
+</script>
+<script>/* আসল ফরম অনুযায়ী ঘরের তালিকা, ড্রপডাউনের মান ও যাচাইয়ের নিয়ম */
+(() => {
+if (typeof window !== 'undefined' && window.NK) return;
+
+const MONTHS_BN = ['জানুয়ারি', 'ফেব্রুয়ারি', 'মার্চ', 'এপ্রিল', 'মে', 'জুন',
+  'জুলাই', 'আগস্ট', 'সেপ্টেম্বর', 'অক্টোবর', 'নভেম্বর', 'ডিসেম্বর'];
+const MONTHS_EN = ['January', 'February', 'March', 'April', 'May', 'June',
+  'July', 'August', 'September', 'October', 'November', 'December'];
+const CLASS_BN = {
+  1: ['প্রথম', '১ম'], 2: ['দ্বিতীয়', '২য়'], 3: ['তৃতীয়', '৩য়'], 4: ['চতুর্থ', '৪র্থ'],
+  5: ['পঞ্চম', '৫ম'], 6: ['ষষ্ঠ', '৬ষ্ঠ'], 7: ['সপ্তম', '৭ম'], 8: ['অষ্টম', '৮ম'],
+  9: ['নবম', '৯ম'], 10: ['দশম', '১০ম']
+};
+
+const NK = {
+  /* ফরমে যে তথ্যগুলো লাগে — এগুলোই কাগজ থেকে পড়া হয় ও টেবিলে দেখানো হয় */
+  FIELDS: [
+    { k: 'খেলোয়াড়ের নাম (বাংলা)', ocr: 'জন্ম নিবন্ধন' },
+    { k: 'Full Name (English)', ocr: 'জন্ম নিবন্ধন' },
+    { k: 'জন্ম নিবন্ধন নম্বর', ocr: 'জন্ম নিবন্ধন' },
+    { k: 'জন্ম তারিখ', ocr: 'জন্ম নিবন্ধন' },
+    { k: 'লিঙ্গ', ocr: 'জন্ম নিবন্ধন' },
+    { k: 'পিতার নাম', ocr: 'জন্ম নিবন্ধন' },
+    { k: 'মাতার নাম', ocr: 'জন্ম নিবন্ধন' },
+    { k: 'অভিভাবকের নাম', ocr: 'এনআইডি' },
+    { k: 'অভিভাবকের এনআইডি', ocr: 'এনআইডি' },
+    { k: 'মোবাইল নম্বর', ocr: '' },
+    { k: 'শিক্ষা প্রতিষ্ঠানের নাম', ocr: 'প্রত্যয়নপত্র' },
+    { k: 'শ্রেণি', ocr: 'প্রত্যয়নপত্র' },
+    { k: 'রোল নম্বর', ocr: 'প্রত্যয়নপত্র', opt: true },
+    { k: 'বিভাগ', ocr: 'জন্ম নিবন্ধন' },
+    { k: 'জেলা', ocr: 'জন্ম নিবন্ধন' },
+    { k: 'উপজেলা / সিটি কর্পোরেশন / পৌরসভা', ocr: 'জন্ম নিবন্ধন' },
+    { k: 'ইউনিয়ন / ওয়ার্ড', ocr: 'জন্ম নিবন্ধন' },
+    { k: 'ইভেন্ট - ১', ocr: '' },
+    { k: 'ইভেন্ট - ২', ocr: '', opt: true }
+  ],
+
+  /* ফরমের যে ঘরগুলো মেলাতে হবে। src = উপরের কোন তথ্য থেকে মান নেবে */
+  TARGETS: [
+    { key: 'খেলোয়াড়ের নাম (বাংলা)', src: 'খেলোয়াড়ের নাম (বাংলা)' },
+    { key: 'Full Name (English)', src: 'Full Name (English)' },
+    { key: 'জন্ম নিবন্ধন নম্বর', src: 'জন্ম নিবন্ধন নম্বর' },
+    { key: 'জন্ম তারিখ — বছর', src: 'জন্ম তারিখ', part: 'y' },
+    { key: 'জন্ম তারিখ — মাস', src: 'জন্ম তারিখ', part: 'm' },
+    { key: 'জন্ম তারিখ — দিন', src: 'জন্ম তারিখ', part: 'd' },
+    { key: 'লিঙ্গ', src: 'লিঙ্গ' },
+    { key: 'পিতার নাম', src: 'পিতার নাম' },
+    { key: 'মাতার নাম', src: 'মাতার নাম' },
+    { key: 'অভিভাবকের নাম', src: 'অভিভাবকের নাম' },
+    { key: 'অভিভাবকের এনআইডি', src: 'অভিভাবকের এনআইডি' },
+    { key: 'মোবাইল নম্বর', src: 'মোবাইল নম্বর' },
+    { key: 'শিক্ষা প্রতিষ্ঠানের নাম', src: 'শিক্ষা প্রতিষ্ঠানের নাম' },
+    { key: 'শ্রেণি', src: 'শ্রেণি', cls: true },
+    { key: 'রোল নম্বর', src: 'রোল নম্বর' },
+    { key: 'স্থায়ী ঠিকানা — বিভাগ', src: 'বিভাগ', group: 'addr', order: 1, geo: 'div' },
+    { key: 'স্থায়ী ঠিকানা — জেলা', src: 'জেলা', group: 'addr', order: 2, geo: 'dist' },
+    { key: 'স্থায়ী ঠিকানা — উপজেলা', src: 'উপজেলা / সিটি কর্পোরেশন / পৌরসভা', group: 'addr', order: 3, geo: 'upa' },
+    { key: 'স্থায়ী ঠিকানা — ইউনিয়ন/ওয়ার্ড', src: 'ইউনিয়ন / ওয়ার্ড', group: 'addr', order: 4, geo: 'uni' },
+    { key: 'খেলার স্থান — বিভাগ', src: 'খেলার স্থান — বিভাগ', fallback: 'বিভাগ', group: 'venue', order: 1, geo: 'div' },
+    { key: 'খেলার স্থান — জেলা', src: 'খেলার স্থান — জেলা', fallback: 'জেলা', group: 'venue', order: 2, geo: 'dist' },
+    { key: 'খেলার স্থান — উপজেলা', src: 'খেলার স্থান — উপজেলা', fallback: 'উপজেলা / সিটি কর্পোরেশন / পৌরসভা', group: 'venue', order: 3, geo: 'upa' },
+    { key: 'খেলার স্থান — ইউনিয়ন/ওয়ার্ড', src: 'খেলার স্থান — ইউনিয়ন/ওয়ার্ড', fallback: 'ইউনিয়ন / ওয়ার্ড', group: 'venue', order: 4, geo: 'uni' },
+    { key: 'ইভেন্ট - ১', src: 'ইভেন্ট - ১' },
+    { key: 'ইভেন্ট - ২', src: 'ইভেন্ট - ২' }
+  ],
+
+  FILE_SLOTS: {
+    __photo: 'ছবি (Auto Crop)',
+    __birth: 'জন্ম নিবন্ধন',
+    __nid: 'অভিভাবকের এনআইডি',
+    __certificate: 'প্রতিষ্ঠানের প্রত্যয়নপত্র',
+    __extra1: 'ভর্তি রেজি. কার্ড / বার্ষিক ফলাফল',
+    __extra2: 'স্টুডেন্ট আইডি / প্রত্যয়নের কপি'
+  },
+
+  DOC_SLOTS: {
+    __birth: 'জন্ম নিবন্ধন সনদ',
+    __nid: 'অভিভাবকের জাতীয় পরিচয়পত্র (এনআইডি)',
+    __certificate: 'শিক্ষা প্রতিষ্ঠান প্রধানের প্রত্যয়নপত্র'
+  },
+
+  PINNABLE: [
+    'শিক্ষা প্রতিষ্ঠানের নাম', 'লিঙ্গ', 'শ্রেণি', 'মোবাইল নম্বর',
+    'বিভাগ', 'জেলা', 'উপজেলা / সিটি কর্পোরেশন / পৌরসভা', 'ইউনিয়ন / ওয়ার্ড',
+    'খেলার স্থান — বিভাগ', 'খেলার স্থান — জেলা', 'খেলার স্থান — উপজেলা', 'খেলার স্থান — ইউনিয়ন/ওয়ার্ড',
+    'ইভেন্ট - ১', 'ইভেন্ট - ২'
+  ],
+
+  DOB_MIN: '2012-09-01',
+  DOB_MAX: '2016-08-31',
+
+  ascii(v) { return String(v == null ? '' : v).replace(/[০-৯]/g, (d) => String('০১২৩৪৫৬৭৮৯'.indexOf(d))); },
+  bangla(v) { return String(v == null ? '' : v).replace(/[0-9]/g, (d) => '০১২৩৪৫৬৭৮৯'[+d]); },
+  digits(v) { return NK.ascii(v).replace(/\D/g, ''); },
+
+  toISO(v) {
+    const s = NK.ascii(v).trim();
+    let m = s.match(/^(\d{4})[-/.](\d{1,2})[-/.](\d{1,2})$/);
+    if (m) return m[1] + '-' + String(m[2]).padStart(2, '0') + '-' + String(m[3]).padStart(2, '0');
+    m = s.match(/^(\d{1,2})[-/.](\d{1,2})[-/.](\d{4})$/);
+    if (m) return m[3] + '-' + String(m[2]).padStart(2, '0') + '-' + String(m[1]).padStart(2, '0');
+    return null;
+  },
+
+  /* একটি ঘরে বসানোর জন্য সম্ভাব্য মানগুলো — ড্রপডাউনে যেটা মেলে সেটাই বসে */
+  candidates(target, val) {
+    const raw = String(val == null ? '' : val).trim();
+    if (!raw) return [];
+    const out = [];
+    const push = (x) => { if (x && out.indexOf(String(x)) < 0) out.push(String(x)); };
+
+    if (target.part) {
+      const iso = NK.toISO(raw);
+      if (!iso) return [];
+      const [y, m, d] = iso.split('-');
+      if (target.part === 'y') { push(y); push(NK.bangla(y)); }
+      if (target.part === 'm') {
+        const i = parseInt(m, 10) - 1;
+        push(MONTHS_BN[i]); push(MONTHS_EN[i]); push(MONTHS_EN[i].slice(0, 3));
+        push(m); push(String(i + 1)); push(NK.bangla(m)); push(NK.bangla(String(i + 1)));
+      }
+      if (target.part === 'd') {
+        const n = String(parseInt(d, 10));
+        push(d); push(n); push(NK.bangla(d)); push(NK.bangla(n));
+      }
+      return out;
+    }
+
+    if (target.cls) {
+      const n = parseInt(NK.digits(raw), 10);
+      push(raw);
+      if (n && CLASS_BN[n]) {
+        CLASS_BN[n].forEach((name) => { push(name); push(name + ' শ্রেণি'); });
+        push(String(n)); push(NK.bangla(String(n)));
+      }
+      return out;
+    }
+
+    push(raw);
+    if (/^[০-৯\d\s\-/.]+$/.test(raw)) { push(NK.ascii(raw)); push(NK.bangla(raw)); }
+    if (target.geo && typeof window !== 'undefined' && window.NKGEO) {
+      window.NKGEO.candidates(target.geo, raw).forEach(push);
+    }
+    return out;
+  },
+
+  check(key, val) {
+    const f = NK.FIELDS.find((x) => x.k === key);
+    const v = String(val == null ? '' : val).trim();
+    if (key === 'জন্ম নিবন্ধন নম্বর') {
+      const d = NK.digits(v);
+      if (!d) return 'পড়া যায়নি — সনদ দেখে বসান';
+      if (d.length !== 17) return d.length + ' অঙ্ক পাওয়া গেছে, হতে হবে ১৭ অঙ্ক';
+      return '';
+    }
+    if (key === 'অভিভাবকের এনআইডি') {
+      const d = NK.digits(v);
+      if (!d) return 'পড়া যায়নি — এনআইডি দেখে বসান';
+      if ([10, 13, 17].indexOf(d.length) < 0) return d.length + ' অঙ্ক পাওয়া গেছে, হতে হবে ১০/১৩/১৭ অঙ্ক';
+      return '';
+    }
+    if (key === 'মোবাইল নম্বর') {
+      const d = NK.digits(v);
+      if (!d) return 'মোবাইল নম্বর বসান';
+      if (!/^01\d{9}$/.test(d)) return '০১ দিয়ে শুরু ১১ অঙ্ক হতে হবে';
+      return '';
+    }
+    if (key === 'জন্ম তারিখ') {
+      const iso = NK.toISO(v);
+      if (!iso) return 'তারিখ পড়া যায়নি — দিন/মাস/বছর আকারে বসান';
+      if (iso < NK.DOB_MIN || iso > NK.DOB_MAX) return 'বয়স সীমার বাইরে (০১/০৯/২০১২ – ৩১/০৮/২০১৬)';
+      return '';
+    }
+    if (!v) return (f && f.opt) ? '' : 'ফাঁকা আছে';
+    return '';
+  }
+};
+
+if (typeof window !== 'undefined') window.NK = NK;
+})();
+</script>
+<script>/* কাগজ পড়ার অংশ — একাধিক key ও মডেল নিয়ে চেষ্টা করে, ব্যস্ত থাকলে নিজেই আবার চেষ্টা করে */
+(() => {
+  if (window.NKOCR) return;
+
+  const sleep = (ms) => new Promise((r) => setTimeout(r, ms));
+
+  const PROVIDERS = {
+    gemini: {
+      name: 'Google Gemini (ফ্রি)',
+      models: ['gemini-2.5-flash', 'gemini-2.5-flash-lite', 'gemini-2.0-flash', 'gemini-3-flash'],
+      fallback: ['gemini-2.5-flash-lite', 'gemini-2.0-flash'],
+      keyHint: 'aistudio.google.com → Create API key (ফ্রি)',
+      async run(images, promptText, key, model) {
+        const parts = [];
+        images.forEach((im) => {
+          parts.push({ text: 'নিচের ছবিটি: ' + im.label });
+          parts.push({ inline_data: { mime_type: 'image/jpeg', data: im.b64 } });
+        });
+        parts.push({ text: promptText });
+        const res = await fetch('https://generativelanguage.googleapis.com/v1beta/models/' +
+          encodeURIComponent(model) + ':generateContent', {
+          method: 'POST',
+          headers: { 'content-type': 'application/json', 'x-goog-api-key': key },
+          body: JSON.stringify({
+            contents: [{ role: 'user', parts }],
+            generationConfig: { temperature: 0, response_mime_type: 'application/json' }
+          })
+        });
+        const data = await res.json().catch(() => ({}));
+        if (!res.ok) {
+          const err = new Error((data.error && data.error.message) || ('HTTP ' + res.status));
+          err.status = res.status;
+          throw err;
+        }
+        const cand = (data.candidates || [])[0];
+        if (!cand) throw new Error('সেবা কোনো উত্তর দেয়নি');
+        return (cand.content && cand.content.parts || []).map((p) => p.text || '').join('\n');
+      }
+    },
+
+    openrouter: {
+      name: 'OpenRouter (ফ্রি মডেলও আছে)',
+      models: ['google/gemini-2.0-flash-exp:free', 'qwen/qwen2.5-vl-72b-instruct:free', 'meta-llama/llama-3.2-11b-vision-instruct:free'],
+      fallback: [],
+      keyHint: 'openrouter.ai → Keys',
+      async run(images, promptText, key, model) {
+        const content = [];
+        images.forEach((im) => {
+          content.push({ type: 'text', text: 'নিচের ছবিটি: ' + im.label });
+          content.push({ type: 'image_url', image_url: { url: 'data:image/jpeg;base64,' + im.b64 } });
+        });
+        content.push({ type: 'text', text: promptText });
+        const res = await fetch('https://openrouter.ai/api/v1/chat/completions', {
+          method: 'POST',
+          headers: { 'content-type': 'application/json', authorization: 'Bearer ' + key },
+          body: JSON.stringify({ model, temperature: 0, messages: [{ role: 'user', content }] })
+        });
+        const data = await res.json().catch(() => ({}));
+        if (!res.ok) {
+          const err = new Error((data.error && data.error.message) || ('HTTP ' + res.status));
+          err.status = res.status;
+          throw err;
+        }
+        return ((data.choices || [])[0] || {}).message.content || '';
+      }
+    },
+
+    anthropic: {
+      name: 'Anthropic Claude (টাকা লাগে)',
+      models: ['claude-sonnet-5', 'claude-haiku-4-5-20251001', 'claude-opus-5'],
+      fallback: [],
+      keyHint: 'console.anthropic.com → API keys',
+      async run(images, promptText, key, model) {
+        const content = [];
+        images.forEach((im) => {
+          content.push({ type: 'text', text: 'নিচের ছবিটি: ' + im.label });
+          content.push({ type: 'image', source: { type: 'base64', media_type: 'image/jpeg', data: im.b64 } });
+        });
+        content.push({ type: 'text', text: promptText });
+        const res = await fetch('https://api.anthropic.com/v1/messages', {
+          method: 'POST',
+          headers: {
+            'content-type': 'application/json',
+            'x-api-key': key,
+            'anthropic-version': '2023-06-01',
+            'anthropic-dangerous-direct-browser-access': 'true'
+          },
+          body: JSON.stringify({ model, max_tokens: 2000, messages: [{ role: 'user', content }] })
+        });
+        const data = await res.json().catch(() => ({}));
+        if (!res.ok) {
+          const err = new Error((data.error && data.error.message) || ('HTTP ' + res.status));
+          err.status = res.status;
+          throw err;
+        }
+        return (data.content || []).filter((b) => b.type === 'text').map((b) => b.text).join('\n');
+      }
+    }
+  };
+
+  function buildPrompt(fields) {
+    const lines = fields.map((f) => '- "' + f.k + '"' + (f.ocr ? ' → ' + f.ocr + ' থেকে' : ' → কাগজে না থাকলে ফাঁকা'));
+    return 'তুমি বাংলাদেশের সরকারি কাগজপত্র পড়ে তথ্য তুলে দেওয়ার সহকারী। উপরের ছবিগুলো ভালো করে দেখে নিচের ঘরগুলো পূরণ করো।\n\n' +
+      'ঘর ও কোথায় পাওয়া যাবে:\n' + lines.join('\n') + '\n\n' +
+      'নিয়ম:\n' +
+      '১. বাংলা নাম বাংলা হরফে, কাগজে যেভাবে আছে হুবহু সেভাবে। "Full Name (English)" জন্ম নিবন্ধনের ইংরেজি অংশ থেকে বড় হাতের অক্ষরে।\n' +
+      '২. সব সংখ্যা ইংরেজি অঙ্কে, ফাঁকা বা ড্যাশ ছাড়া। জন্ম নিবন্ধন নম্বর সাধারণত ১৭ অঙ্কের — অঙ্ক গুনে দাও, কম-বেশি করবে না।\n' +
+      '৩. জন্ম তারিখ DD/MM/YYYY আকারে।\n' +
+      '৪. লিঙ্গ শুধু "বালক" বা "বালিকা"।\n' +
+      '৫. শ্রেণি শুধু সংখ্যায়, যেমন ৬ শ্রেণির জন্য "6"।\n' +
+      '৬. ঠিকানার ঘরগুলো জন্ম নিবন্ধনের ঠিকানা অংশ থেকে: বিভাগ, জেলা, উপজেলা/সিটি কর্পোরেশন/পৌরসভা, ইউনিয়ন/ওয়ার্ড — শুধু নামটি লেখো, "উপজেলা" বা "জেলা" শব্দ যোগ করবে না।\n' +
+      '৭. কোনো তথ্য ছবিতে স্পষ্ট না থাকলে "" রাখো — অনুমান করবে না।\n\n' +
+      'উত্তরে শুধু ঐ কী-গুলো নিয়ে একটি JSON অবজেক্ট দাও, আর কোনো লেখা নয়।';
+  }
+
+  function parseJSON(text) {
+    const clean = String(text || '').replace(/```json|```/g, '').trim();
+    const a = clean.indexOf('{'), b = clean.lastIndexOf('}');
+    if (a < 0 || b < 0) throw new Error('উত্তরে তথ্য পাওয়া যায়নি: ' + clean.slice(0, 120));
+    return JSON.parse(clean.slice(a, b + 1));
+  }
+
+  const busyErr = (m) => /overload|high demand|unavailable|503|500|internal/i.test(m);
+  const quotaErr = (m) => /quota|rate|429|exhaust|limit/i.test(m);
+
+  function keyList(cfg) {
+    const raw = cfg.apiKeys || cfg.apiKey || '';
+    return String(raw).split(/[\s,]+/).map((s) => s.trim()).filter(Boolean);
+  }
+
+  window.NKOCR = {
+    PROVIDERS,
+    buildPrompt,
+    parseJSON,
+
+    async read(cfg, images, fields, onStatus) {
+      const p = PROVIDERS[cfg.provider || 'gemini'];
+      if (!p) throw new Error('অজানা সেবা');
+      const keys = keyList(cfg);
+      if (!keys.length) throw new Error('API key বসানো হয়নি');
+      const models = [cfg.model || p.models[0]].concat(p.fallback)
+        .filter((m, i, a) => m && a.indexOf(m) === i);
+      const promptText = buildPrompt(fields);
+      let last = null;
+
+      for (const model of models) {
+        for (let ki = 0; ki < keys.length; ki++) {
+          for (let attempt = 0; attempt < 2; attempt++) {
+            try {
+              if (onStatus) {
+                onStatus('পড়া হচ্ছে — ' + model + (keys.length > 1 ? ' (key ' + (ki + 1) + ')' : '') +
+                  (attempt ? ' • আবার চেষ্টা' : ''));
+              }
+              const out = parseJSON(await p.run(images, promptText, keys[ki], model));
+              return { data: out, model, keyIndex: ki };
+            } catch (e) {
+              last = e;
+              const m = e.message || '';
+              if (busyErr(m)) {
+                if (onStatus) onStatus('সেবা ব্যস্ত — ৩ সেকেন্ড পরে আবার চেষ্টা করছি…');
+                await sleep(3000);
+                continue;
+              }
+              if (quotaErr(m)) break;          // এই key/মডেলে কোটা শেষ — পরেরটা
+              if (e.status === 404) break;      // মডেলের নাম চলছে না — পরের মডেল
+              throw e;                          // key ভুল ইত্যাদি — সরাসরি জানাই
+            }
+          }
+        }
+      }
+      throw last || new Error('পড়া যায়নি');
+    },
+
+    async test(cfg) {
+      const p = PROVIDERS[cfg.provider || 'gemini'];
+      const keys = keyList(cfg);
+      if (!keys.length) throw new Error('key নেই');
+      const out = [];
+      for (let i = 0; i < keys.length; i++) {
+        try {
+          parseJSON(await p.run([], 'শুধু এই JSON দাও: {"ঠিক":"হ্যাঁ"}', keys[i], cfg.model || p.models[0]));
+          out.push('key ' + (i + 1) + ': ঠিক আছে ✔');
+        } catch (e) {
+          out.push('key ' + (i + 1) + ': ' + e.message);
+        }
+      }
+      return out;
+    }
+  };
+})();
+</script>
+<script>/* মোবাইল স্ক্যান অ্যাপ — কাগজ স্ক্যান করে তালিকায় রাখে, পরে কম্পিউটারে পাঠায় */
+const $ = (id) => document.getElementById(id);
+const esc = (s) => String(s == null ? '' : s).replace(/[&<>"]/g, (c) => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;' }[c]));
+const kb = (d) => Math.round((String(d).length * 0.75) / 1024);
+const LS = {
+  get: (k, d) => { try { const v = localStorage.getItem('nk_' + k); return v == null ? d : JSON.parse(v); } catch (e) { return d; } },
+  set: (k, v) => localStorage.setItem('nk_' + k, JSON.stringify(v))
+};
+
+const SLOTS = NK.FILE_SLOTS;
+const DOCS = NK.DOC_SLOTS;
+
+let cur = { fields: {}, files: {}, ocr: {} };   // যেটা এখন স্ক্যান হচ্ছে
+let recs = [];                          // তালিকা (তথ্যসহ, ছবি ছাড়া)
+let conn = null, peer = null;
+let busy = false;
+
+/* ---------------- IndexedDB ---------------- */
+let db = null;
+function openDB() {
+  return new Promise((res, rej) => {
+    const r = indexedDB.open('nk_scan', 1);
+    r.onupgradeneeded = () => {
+      const d = r.result;
+      if (!d.objectStoreNames.contains('recs')) d.createObjectStore('recs', { keyPath: 'id' });
+    };
+    r.onsuccess = () => { db = r.result; res(db); };
+    r.onerror = () => rej(r.error);
+  });
+}
+const tx = (mode) => db.transaction('recs', mode).objectStore('recs');
+function dbPut(rec) { return new Promise((res, rej) => { const q = tx('readwrite').put(rec); q.onsuccess = res; q.onerror = () => rej(q.error); }); }
+function dbAll() { return new Promise((res, rej) => { const q = tx('readonly').getAll(); q.onsuccess = () => res(q.result || []); q.onerror = () => rej(q.error); }); }
+function dbGet(id) { return new Promise((res, rej) => { const q = tx('readonly').get(id); q.onsuccess = () => res(q.result); q.onerror = () => rej(q.error); }); }
+function dbDel(id) { return new Promise((res, rej) => { const q = tx('readwrite').delete(id); q.onsuccess = res; q.onerror = () => rej(q.error); }); }
+
+/* ---------------- ছবি ---------------- */
+function takePhoto(slot) {
+  const inp = document.createElement('input');
+  inp.type = 'file';
+  inp.accept = 'image/*';
+  inp.setAttribute('capture', 'environment');
+  inp.onchange = () => {
+    const f = inp.files && inp.files[0];
+    if (!f) return;
+    toast('প্রসেস হচ্ছে…');
+    const fr = new FileReader();
+    fr.onload = () => {
+      const img = new Image();
+      img.onload = () => setTimeout(() => {
+        const isPhoto = slot === '__photo';
+        const r = isPhoto ? NKFX.photo(img) : NKFX.doc(img, { bw: LS.get('bw', true) });
+        cur.files[slot] = r.out;
+        if (r.ocr) cur.ocr[slot] = r.ocr; else delete cur.ocr[slot];
+        renderSlots();
+        if (isPhoto) toast('ছবি নেওয়া হয়েছে');
+        else toast(r.cropped
+          ? SLOTS[slot] + ' — কিনারা কেটে সোজা করা হয়েছে (' + kb(r.out) + ' KB)'
+          : SLOTS[slot] + ' — কিনারা পাওয়া যায়নি, পুরো ছবিই রাখা হলো। কাগজটি একরঙা মেঝে/টেবিলে রেখে আবার তুলুন।');
+        if (LS.get('mode', 'list') === 'live' && conn && conn.open) {
+          conn.send({ slot, dataURL: cur.files[slot], ocr: cur.ocr[slot] || null });
+          toast(SLOTS[slot] + ' কম্পিউটারে পাঠানো হয়েছে');
+        }
+      }, 30);
+      img.src = fr.result;
+    };
+    fr.readAsDataURL(f);
+  };
+  inp.click();
+}
+
+/* ---------------- কাগজ পড়া ---------------- */
+async function readDocs() {
+  if (busy) return;
+  const have = Object.keys(DOCS).filter((k) => cur.files[k]);
+  if (!have.length) { toast('আগে অন্তত একটি কাগজের ছবি তুলুন'); return; }
+  const cfg = { provider: 'gemini', apiKeys: LS.get('keys', ''), model: LS.get('model', 'gemini-2.5-flash') };
+  if (!cfg.apiKeys) { toast('সেটিং-এ API key বসান'); show('set'); return; }
+  busy = true;
+  $('read').textContent = 'পড়া হচ্ছে…';
+  try {
+    const images = have.map((k) => ({ label: DOCS[k], b64: (cur.ocr[k] || cur.files[k]).split(',')[1] }));
+    const out = await NKOCR.read(cfg, images, NK.FIELDS, toast);
+    const consts = LS.get('consts', {});
+    NK.FIELDS.forEach((f) => {
+      const v = out.data[f.k];
+      cur.fields[f.k] = (v != null && String(v).trim() !== '') ? String(v).trim() : (cur.fields[f.k] || consts[f.k] || '');
+    });
+    renderFields();
+    const bad = NK.FIELDS.filter((f) => NK.check(f.k, cur.fields[f.k])).length;
+    toast(bad ? 'পড়া হয়েছে — ' + bad + ' টি ঘর দেখে নিন' : 'পড়া হয়েছে, সব ঠিক দেখাচ্ছে');
+  } catch (e) {
+    toast('পড়া যায়নি: ' + e.message);
+    const consts = LS.get('consts', {});
+    NK.FIELDS.forEach((f) => { if (cur.fields[f.k] == null) cur.fields[f.k] = consts[f.k] || ''; });
+    renderFields();
+  } finally {
+    busy = false;
+    $('read').textContent = 'কাগজ পড়ো';
+  }
+}
+
+/* ---------------- সংরক্ষণ ও তালিকা ---------------- */
+async function saveRec() {
+  if (!Object.keys(cur.fields).length) { toast('আগে কাগজ পড়ুন বা ঘরগুলো লিখুন'); return; }
+  const id = cur.id || ('r' + Date.now().toString(36));
+  const rec = { id, fields: Object.assign({}, cur.fields), files: Object.assign({}, cur.files), ocr: Object.assign({}, cur.ocr), at: Date.now() };
+  await dbPut(rec);
+  cur = { fields: {}, files: {}, ocr: {} };
+  renderSlots(); renderFields();
+  await loadList();
+  toast('তালিকায় যোগ হয়েছে — মোট ' + recs.length + ' জন');
+  show('list');
+}
+
+async function loadList() {
+  const all = await dbAll();
+  all.sort((a, b) => a.at - b.at);
+  recs = all;
+  renderList();
+  $('cnt').textContent = recs.length;
+}
+
+async function editRec(id) {
+  const r = await dbGet(id);
+  if (!r) return;
+  cur = { id: r.id, fields: Object.assign({}, r.fields), files: Object.assign({}, r.files), ocr: Object.assign({}, r.ocr || {}) };
+  renderSlots(); renderFields();
+  show('scan');
+}
+
+async function delRec(id) {
+  if (!confirm('এই ছাত্রের তথ্য মুছে ফেলা হবে?')) return;
+  await dbDel(id);
+  await loadList();
+}
+
+function csv() {
+  const cols = NK.FIELDS.map((f) => f.k);
+  const q = (v) => '"' + String(v == null ? '' : v).replace(/"/g, '""') + '"';
+  const lines = [cols.map(q).join(',')];
+  recs.forEach((r) => lines.push(cols.map((c) => q(r.fields[c])).join(',')));
+  const blob = new Blob(['\ufeff' + lines.join('\n')], { type: 'text/csv;charset=utf-8' });
+  const a = document.createElement('a');
+  a.href = URL.createObjectURL(blob);
+  a.download = 'notun-kuri-talika.csv';
+  a.click();
+  toast(recs.length + ' জনের CSV নামানো হয়েছে');
+}
+
+/* ---------------- কম্পিউটারের সাথে ---------------- */
+function connStatus(txt, ok) {
+  $('conn').innerHTML = ok ? 'কম্পিউটারে <b>যুক্ত</b>' : '<span class="off">' + esc(txt) + '</span>';
+}
+
+function connect(id) {
+  id = (id || '').trim();
+  if (!id) { connStatus('কোড নেই — এক্সটেনশনের QR স্ক্যান করুন', false); return; }
+  if (peer) { try { peer.destroy(); } catch (e) {} }
+  connStatus('যুক্ত হচ্ছে…', false);
+  peer = new Peer({ debug: 0 });
+  peer.on('open', () => {
+    conn = peer.connect(id, { reliable: true });
+    conn.on('open', () => connStatus('', true));
+    conn.on('data', async (msg) => {
+      if (msg && msg.type === 'NEED') {
+        const r = await dbGet(msg.id);
+        if (!r) return;
+        conn.send({ type: 'FILES', id: r.id, name: r.fields['খেলোয়াড়ের নাম (বাংলা)'] || '', files: r.files });
+      }
+    });
+    conn.on('close', () => connStatus('সংযোগ কেটে গেছে', false));
+    conn.on('error', (e) => connStatus('সমস্যা: ' + e.type, false));
+  });
+  peer.on('error', (e) => connStatus('যুক্ত হয়নি (' + e.type + ')', false));
+}
+
+function sendList() {
+  if (!conn || !conn.open) { toast('আগে কম্পিউটারে যুক্ত হন (QR স্ক্যান করুন)'); return; }
+  if (!recs.length) { toast('তালিকা খালি'); return; }
+  const rows = recs.map((r) => Object.assign({ __id: r.id, __done: false }, r.fields));
+  conn.send({ type: 'LIST', rows });
+  toast(rows.length + ' জনের তালিকা পাঠানো হয়েছে। কম্পিউটারে একজন একজন করে ফরম পূরণ করুন — ছবি নিজেই যাবে।');
+}
+
+/* ---------------- দেখানো ---------------- */
+let toastT = null;
+function toast(t) {
+  $('toast').textContent = t;
+  $('toast').style.display = 'block';
+  clearTimeout(toastT);
+  toastT = setTimeout(() => { $('toast').style.display = 'none'; }, 6000);
+}
+
+function show(tab) {
+  ['scan', 'list', 'set'].forEach((t) => {
+    $('t_' + t).classList.toggle('on', t === tab);
+    $('p_' + t).style.display = t === tab ? 'block' : 'none';
+  });
+}
+
+function renderSlots() {
+  $('slots').innerHTML = Object.keys(SLOTS).map((k) => {
+    const d = cur.files[k];
+    return '<div class="slot">' +
+      (d ? '<img src="' + d + '">' : '<div class="ph"></div>') +
+      '<div class="m"><b>' + esc(SLOTS[k]) + '</b><span>' + (d ? kb(d) + ' KB' : 'বাকি') + '</span></div>' +
+      '<button data-cap="' + k + '">' + (d ? 'আবার' : 'তুলুন') + '</button></div>';
+  }).join('');
+}
+
+function renderFields() {
+  const keys = NK.FIELDS.map((f) => f.k);
+  if (!Object.keys(cur.fields).length) { $('fields').innerHTML = '<div class="hint">কাগজ পড়ার পর ঘরগুলো এখানে আসবে।</div>'; return; }
+  $('fields').innerHTML = keys.map((k) => {
+    const w = NK.check(k, cur.fields[k]);
+    return '<div class="f' + (w ? ' bad' : '') + '"><label>' + esc(k) + '</label>' +
+      '<input data-f="' + esc(k) + '" value="' + esc(cur.fields[k] || '') + '">' +
+      '<div class="w">' + (w ? esc(w) : '✔') + '</div></div>';
+  }).join('');
+}
+
+function renderList() {
+  if (!recs.length) { $('list').innerHTML = '<div class="hint">এখনও কেউ নেই।</div>'; return; }
+  $('list').innerHTML = recs.map((r, i) => {
+    const bad = NK.FIELDS.filter((f) => NK.check(f.k, r.fields[f.k])).length;
+    const imgs = Object.keys(r.files || {}).length;
+    return '<div class="rec"><div class="n">' + (i + 1) + '. ' + esc(r.fields['খেলোয়াড়ের নাম (বাংলা)'] || '(নাম নেই)') + '</div>' +
+      '<div class="s">শ্রেণি ' + esc(r.fields['শ্রেণি'] || '-') + ' • রোল ' + esc(r.fields['রোল নম্বর'] || '-') +
+      ' • ছবি ' + imgs + '/6 • ' + (bad ? '<span class="off">' + bad + ' টি ঘর দেখুন</span>' : 'ঠিক আছে') + '</div>' +
+      '<div class="b"><button data-ed="' + r.id + '">দেখুন</button><button data-del="' + r.id + '">মুছুন</button></div></div>';
+  }).join('');
+}
+
+function renderConsts() {
+  const c = LS.get('consts', {});
+  const pin = ['শিক্ষা প্রতিষ্ঠানের নাম', 'লিঙ্গ', 'মোবাইল নম্বর', 'বিভাগ', 'জেলা',
+    'উপজেলা / সিটি কর্পোরেশন / পৌরসভা', 'ইউনিয়ন / ওয়ার্ড', 'ইভেন্ট - ১', 'শ্রেণি'];
+  $('consts').innerHTML = pin.map((k) =>
+    '<div class="f"><label>' + esc(k) + '</label><input data-k="' + esc(k) + '" value="' + esc(c[k] || '') + '"></div>').join('');
+}
+
+/* ---------------- ইভেন্ট ---------------- */
+document.addEventListener('click', (e) => {
+  const cap = e.target.closest('[data-cap]');
+  if (cap) return takePhoto(cap.getAttribute('data-cap'));
+  const ed = e.target.closest('[data-ed]');
+  if (ed) return editRec(ed.getAttribute('data-ed'));
+  const dl = e.target.closest('[data-del]');
+  if (dl) return delRec(dl.getAttribute('data-del'));
+});
+
+$('fields').addEventListener('input', (e) => {
+  const inp = e.target.closest('[data-f]');
+  if (!inp) return;
+  const k = inp.getAttribute('data-f');
+  cur.fields[k] = inp.value;
+  const box = inp.closest('.f');
+  const w = NK.check(k, inp.value);
+  box.classList.toggle('bad', !!w);
+  box.querySelector('.w').textContent = w || '✔';
+});
+
+$('t_scan').onclick = () => show('scan');
+$('t_list').onclick = () => show('list');
+$('t_set').onclick = () => show('set');
+$('read').onclick = readDocs;
+$('save').onclick = saveRec;
+$('csv').onclick = csv;
+$('sendList').onclick = sendList;
+$('newRec').onclick = () => { cur = { fields: {}, files: {}, ocr: {} }; renderSlots(); renderFields(); show('scan'); toast('নতুন ছাত্র — কাগজ তুলুন'); };
+
+$('saveSet').onclick = () => {
+  LS.set('keys', $('keys').value.trim());
+  LS.set('model', $('model').value);
+  LS.set('mode', $('mode').value);
+  LS.set('bw', $('bw').checked);
+  const c = {};
+  document.querySelectorAll('[data-k]').forEach((i) => { if (i.value.trim()) c[i.getAttribute('data-k')] = i.value.trim(); });
+  LS.set('consts', c);
+  toast('সেটিং সংরক্ষণ হয়েছে');
+};
+$('doConnect').onclick = () => connect($('code').value);
+$('wipe').onclick = async () => {
+  if (!confirm('তালিকার সব ছাত্র মুছে ফেলা হবে। নিশ্চিত?')) return;
+  for (const r of recs) await dbDel(r.id);
+  await loadList();
+  toast('সব মুছে ফেলা হয়েছে');
+};
+
+/* ---------------- শুরু ---------------- */
+(async () => {
+  $('keys').value = LS.get('keys', '');
+  $('model').value = LS.get('model', 'gemini-2.5-flash');
+  $('mode').value = LS.get('mode', 'list');
+  $('bw').checked = LS.get('bw', true);
+  renderConsts();
+  renderSlots();
+  renderFields();
+  await openDB();
+  await loadList();
+  const id = location.hash.replace('#', '').trim();
+  if (id) { $('code').value = id; connect(id); }
+  else connStatus('কোড নেই — এক্সটেনশনের QR স্ক্যান করুন', false);
+  if (!LS.get('keys', '')) { show('set'); toast('প্রথমে সেটিং-এ API key বসান'); }
+})();
 </script>
 </body>
 </html>
