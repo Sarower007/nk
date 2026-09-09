@@ -24,11 +24,16 @@
   .sent{margin-top:9px;display:grid;grid-template-columns:1fr 1fr;gap:5px;font-size:11.5px}
   .sent div{background:#10261f;border:1px solid #22493a;border-radius:7px;padding:5px 7px}
   .sent .y{border-color:#2f9e6f;color:#9fe3c4}
-  .bwrow{display:flex;gap:8px;align-items:center;margin-top:9px;font-size:12.5px;color:#a9cdbd}
-  .bwrow input{width:auto}
   .sent .cell{padding:0;overflow:hidden;position:relative}
   .sent .cell img{width:100%;height:74px;object-fit:cover;display:block;background:#06120e;cursor:zoom-in}
   .sent .cell .cap{padding:4px 6px;font-size:11px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+  #pv{display:none;position:fixed;inset:0;background:rgba(3,10,8,.96);z-index:100;padding:10px;flex-direction:column}
+  #pv .box{flex:1;min-height:0;display:flex;align-items:center;justify-content:center;overflow:auto}
+  #pv img{max-width:100%;max-height:100%;background:#fff;border-radius:8px}
+  #pv .cap{text-align:center;font-size:12.5px;color:#a9cdbd;padding:6px 0}
+  #pv .btns{display:grid;grid-template-columns:1fr 1fr;gap:8px;padding-top:8px}
+  #pv .ok{background:#2f9e6f;border-color:#2f9e6f;color:#06231a;font-weight:600;font-size:17px;padding:16px}
+  #pv .no{background:#5d2b21;border-color:#8a4030;color:#ffd9cd;font-size:17px;padding:16px}
   #lb{display:none;position:fixed;inset:0;background:rgba(3,10,8,.95);z-index:99;padding:12px;overflow:auto;text-align:center}
   #lb img{max-width:100%;background:#fff;border-radius:6px}
   #lb button{width:auto;padding:9px 16px;margin-bottom:10px}
@@ -52,13 +57,19 @@
     <button data-slot="__extra2">আইডি / প্রত্যয়নের কপি</button>
   </div>
 
-  <button class="shoot" id="shoot">ছবি তুলে কম্পিউটারে পাঠাও</button>
-
-  <label class="bwrow"><input type="checkbox" id="bw" checked> কাগজ সাদা-কালো (কিনারা কেটে সোজা করে)</label>
+  <button class="shoot" id="shoot">ছবি তুলুন</button>
 
   <div class="sent" id="sent"></div>
   <div id="lb"></div>
-  <div id="msg">যে কাগজ তুলছেন সেটি উপরে বেছে নিন, তারপর ছবি তুলুন। ছবি সাথে সাথেই কম্পিউটারে চলে যাবে। নিচের ছোট ছবিতে চাপ দিলে বড় করে দেখা যাবে — ঝাপসা হলে আবার তুলুন।</div>
+  <div id="pv">
+    <div class="cap" id="pvcap"></div>
+    <div class="box"><img id="pvimg"></div>
+    <div class="btns">
+      <button class="no" id="pvno">✘ আবার তুলবো</button>
+      <button class="ok" id="pvok">✔ কম্পিউটারে পাঠাও</button>
+    </div>
+  </div>
+  <div id="msg">যে কাগজ তুলছেন সেটি উপরে বেছে নিন, তারপর ছবি তুলুন। ছবিটি বড় করে দেখা যাবে — পছন্দ হলে ✔ চাপলে কম্পিউটারে যাবে, না হলে ✘ চেপে আবার তুলবেন।</div>
 
 <script src="https://unpkg.com/peerjs@1.5.4/dist/peerjs.min.js"></script>
 <script>/* কাগজের কিনারা খুঁজে বাইরের অংশ বাদ দিয়ে পেজ সোজা করে সাদা-কালো করার অংশ */
@@ -356,6 +367,11 @@ window.NKFX = {
 
     if (!straight) straight = scaled(img, MAX_OUT);
 
+    // রঙিন রাখতে বলা হলে শুধু কিনারা কাটা ও সোজা করা — ছবির রং বদলায় না
+    if (opt && opt.color) {
+      return { out: pack(straight, 1500 * 1024, true), ocr: null, cropped: cropped };
+    }
+
     const gray = enhance(straight);
     const finalC = bw ? blackWhite(gray) : gray;
     return {
@@ -378,6 +394,7 @@ const LABEL = {
 };
 let slot = '__photo', conn = null, stream = null, sent = {}, busy = false;
 const thumbs = {};
+let pending = null;
 const $ = (id) => document.getElementById(id);
 const say = (t) => { $('msg').textContent = t; };
 const kb = (d) => Math.round((d.length * 0.75) / 1024);
@@ -438,27 +455,45 @@ function shoot() {
   if (busy) return;
   const v = $('v');
   if (!v.videoWidth) { say('ক্যামেরা এখনও তৈরি নয়, একটু পরে চাপুন।'); return; }
-  if (!conn || !conn.open) { say('কম্পিউটারের সাথে যুক্ত নয়। QR কোডটি আবার স্ক্যান করুন।'); return; }
   busy = true;
   $('shoot').textContent = 'প্রসেস হচ্ছে…';
   setTimeout(() => {
     try {
       const r = (slot === '__photo')
         ? NKFX.photo(v)
-        : NKFX.doc(v, { bw: $('bw').checked });
-      conn.send({ slot, dataURL: r.out, ocr: r.ocr || null });
-      sent[slot] = true;
-      thumbs[slot] = r.out;
-      renderSent();
-      say(LABEL[slot] + ' পাঠানো হয়েছে (' + kb(r.out) + ' KB)' +
-        (slot === '__photo' ? '' : (r.cropped ? ' — কিনারা কেটে সোজা করা হয়েছে।'
-          : ' — কিনারা পাওয়া যায়নি, পুরো ছবিই গেল। কাগজটি গাঢ় একরঙা জায়গায় রেখে আবার তুলুন।')));
+        : NKFX.doc(v, { color: true });   // রং বদলায় না, শুধু কিনারা কেটে সোজা করা
+      pending = { slot: slot, out: r.out, cropped: r.cropped };
+      $('pvimg').src = r.out;
+      $('pvcap').textContent = LABEL[slot] + ' • ' + kb(r.out) + ' KB' +
+        (slot === '__photo' ? '' : (r.cropped ? ' • কিনারা কেটে সোজা করা হয়েছে' : ' • কিনারা পাওয়া যায়নি, পুরো ছবি'));
+      $('pv').style.display = 'flex';
     } catch (e) {
       say('ছবি প্রসেস হয়নি: ' + e.message);
     }
     busy = false;
-    $('shoot').textContent = 'ছবি তুলে কম্পিউটারে পাঠাও';
+    $('shoot').textContent = 'ছবি তুলুন';
   }, 30);
+}
+
+function accept() {
+  if (!pending) return;
+  if (!conn || !conn.open) { say('কম্পিউটারের সাথে যুক্ত নয়। QR কোডটি আবার স্ক্যান করুন।'); return; }
+  const p = pending;
+  conn.send({ slot: p.slot, dataURL: p.out });
+  sent[p.slot] = true;
+  thumbs[p.slot] = p.out;
+  renderSent();
+  say(LABEL[p.slot] + ' কম্পিউটারে পাঠানো হয়েছে (' + kb(p.out) + ' KB)।');
+  pending = null;
+  $('pv').style.display = 'none';
+  $('pvimg').src = '';
+}
+
+function reject() {
+  pending = null;
+  $('pv').style.display = 'none';
+  $('pvimg').src = '';
+  say('বাতিল করা হলো — আবার ছবি তুলুন।');
 }
 
 document.querySelectorAll('[data-slot]').forEach((b) => b.addEventListener('click', () => {
@@ -471,6 +506,8 @@ document.querySelectorAll('[data-slot]').forEach((b) => b.addEventListener('clic
 }));
 
 $('shoot').addEventListener('click', shoot);
+$('pvok').addEventListener('click', accept);
+$('pvno').addEventListener('click', reject);
 $('guide').style.display = 'block';
 renderSent();
 startCam();
